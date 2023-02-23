@@ -1,0 +1,87 @@
+body {
+    background-color: #f0f0f5;
+}
+
+#hci-logo {
+    width: 120px;
+    height: auto;
+    float: right;
+    padding-top: 0px;
+    margin-top: 0px;
+}
+
+#hci-name {
+    color: #00215f;
+    font-family: 'Times New Roman';
+    font-weight: bolder;
+}
+
+.panel {
+    background-color: white;
+    height: 500px;
+    box-shadow: 2px 2px 5px grey;
+    border-radius: 15px;
+    padding: 30px;
+}
+
+#login-container {
+    padding-left: 20%;
+    padding-right: 20%;
+    padding-top: 3%;
+    padding-bottom: 3%;
+}
+
+#login-pane {
+    background-color: white;
+    height: 350px;
+    padding: 2%;
+    margin-top: 0px;
+
+    display: flex;
+    justify-content: center;
+}
+
+#login-form {
+    width: 100%;
+    margin-left: 30%;
+    margin-right: 30%;
+}
+
+#login-pane-ribbon {
+    color: white;
+    font-family: 'Times New Roman';
+    letter-spacing: .2rem;
+    padding: 2%;
+    background-color: #00215f;
+    margin-bottom: 0px;
+}
+
+.error_message {
+    color:red;
+    float: right;
+}
+
+#footer {
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: black;
+    color: white;
+    text-align: center;
+  }
+
+#register-pane {
+    background-color: white;
+    height: 350px;
+    padding: 2%;
+    margin-top: 0px;
+
+    display: flex;
+    justify-content: center;
+}
+
+#register-form {
+    width: 100%;
+    margin-left: 10%;
+    margin-right: 10%;
+}
