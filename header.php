@@ -19,17 +19,48 @@
 
 <body>
 
+<?php 
+    include_once "includes/functions.inc.php";
+    session_start();
+?>
+
 <div class="container-fluid p-4 bg-warning text-white" id="banner">
 
     <div class="row">
-        <div class="col-lg-2">
+        <div class="col-sm-2">
             <img src="images/logo.webp" alt="HCI-Logo" id="hci-logo">
         </div>
 
-        <div class="col-lg-6" id="hci-name">
+        <div class="col-sm-6" id="hci-name">
             <h1>HEADWATERS COLLEGE</h1>
             <h2>ELIZABETH CAMPUS</h2>
+        </div>
+        <div class="col-sm-3">
+
+        </div>
+        <div class="col-sm-1">
+            <?php 
+                if(isset($_SESSION["id"])){
+                    echo '<button class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#collapse-ribbon">'. $_SESSION["fname"] . '</button>';
+                }
+            ?>
         </div>
     </div>
   
 </div>
+
+<div class="container-fluid bg-white collapse row" id="collapse-ribbon">
+    <div class="col-sm-9"></div>
+    <ul class="nav col-sm-3">
+        <li class="nav-item">
+            <a class="nav-link active" href="index.php">Home</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active" href="resetPassword.php">Change Password</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="functions/logout.php">Logout</a>
+        </li>
+    </ul>
+</div>
+

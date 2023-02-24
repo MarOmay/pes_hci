@@ -1,5 +1,7 @@
 <?php 
     include_once "header.php";
+    include_once "includes/functions.inc.php";
+    checkAuthorization("Master");
 ?>
 
 <div class="container-fluid border" id="login-container">

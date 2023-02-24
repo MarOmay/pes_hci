@@ -5,9 +5,6 @@ body {
 #hci-logo {
     width: 120px;
     height: auto;
-    float: right;
-    padding-top: 0px;
-    margin-top: 0px;
 }
 
 #hci-name {
@@ -91,4 +88,14 @@ body {
     border: 0.5px gray;
     border-radius: 15px;
     height: 100px;
+}
+
+#unauth-pane {
+    background-color: white;
+    height: 350px;
+    padding: 2%;
+    padding-top: 10%;
+    margin-top: 0px;
+    align-items: center;
+    justify-content: center;
 }

@@ -1,5 +1,5 @@
 <?php
-    include_once "header.php";  
+    include_once "header.php";
 ?>
 
 <div class="container-fluid border" id="login-container">
@@ -39,6 +39,9 @@
                     }
                     else if ($_GET["error"] === "created"){
                         echo '<label class="error_message" style="color:green;">Account created</label>';
+                    }
+                    else if ($_GET["error"] === "unauth"){
+                        echo '<label class="error_message" style="color:green;">Login required</label>';
                     }
                 }
             ?>

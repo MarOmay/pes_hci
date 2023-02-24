@@ -2,6 +2,26 @@
 
     include_once "dbh.inc.php";
 
+    function checkLoginStatus(){
+        if (isset($_SESSION["id"]) !== true){
+            header("location: ../index.php?error=unauth");
+        }
+    }
+
+    function checkAuthorization($role){
+        if (isset($_SESSION["role"]) === true){
+
+            if ($_SESSION["role"] !== $role){
+                header("location: unauthorized.php");
+                exit();
+            }
+            
+        }
+        else{
+            header("location: functions/logout.php");
+        }
+    }
+
     function attemptLogin($conn, $username, $password){
         $sql = "SELECT * FROM users WHERE username = ?";
         $stmt = mysqli_stmt_init($conn);
@@ -30,7 +50,13 @@
             $isMatch = password_verify($password, $row["password"]);
 
             if($isMatch === true){
-                echo "alert('Logged in!');";
+                session_start();
+                $_SESSION["id"] = $row["id"];
+                $_SESSION["username"] = $row["username"];
+                $_SESSION["fname"] = $row["fname"];
+                $_SESSION["lname"] = $row["lname"];
+                $_SESSION["section"] = $row["section"];
+                $_SESSION["role"] = $row["role"];
             }
             else{
                 header("location: ../index.php?error=incorrectpassword");
