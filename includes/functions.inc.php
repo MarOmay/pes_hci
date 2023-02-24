@@ -142,6 +142,21 @@
         mysqli_stmt_close($stmt);
 
         if($role === "Teaching" || $role === "Non-Teaching"){
+
+            if(isset($_POST["sections"])){
+
+                foreach ($_POST["sections"] as $evaluator){
+                    $stmt = mysqli_stmt_init($conn);
+                    $sql = "INSERT INTO evaluatee (id, evaluatee_username, evaluatee_fname, evaluatee_lname, evaluator) VALUES (NULL,?,?,?,?)";
+                    mysqli_stmt_prepare($stmt, $sql);
+                    mysqli_stmt_bind_param($stmt, "ssss", $username, $fname, $lname, $evaluator);
+                    mysqli_stmt_execute($stmt);
+
+                    mysqli_stmt_close($stmt);
+                }
+
+            }
+
             header("location: ../registerFaculty.php?error=success");
         }
         else {
@@ -188,7 +203,7 @@
 
         while($row = mysqli_fetch_assoc($resultData)){
             $section = $row["section"];
-            echo "<input type='checkbox' class='form-check-input' name=\"students[]\" value='$section' /> $section<br>";
+            echo "<input type='checkbox' class='form-check-input' name=\"sections[]\" value='$section' /> $section<br>";
         }
 
         mysqli_stmt_close($stmt);
@@ -231,15 +246,25 @@
     function getUsersToEvaluate($conn, $username, $section, $role){
 
         $sql = "SELECT username, fname, lname, role FROM users WHERE role='Teaching' or role='Non-Teching'";
-        if($role === "Student"){
-            $sql = "SELECT username, fname, lname, role FROM users WHERE role='Teaching'";
-        }
-        
         $stmt = mysqli_stmt_init($conn);
+
+        if($role === "Student"){
+            //$sql = "SELECT * FROM evaluatee WHERE evaluator=?";
+            $sql = "SELECT * FROM evaluatees
+            WHERE evaluatee_username NOT IN (SELECT evaluatee FROM evaluations)
+            AND evaluator NOT IN (SELECT evaluator FROM evaluations)
+            AND evaluator=?";
+            $stmt = mysqli_stmt_init($conn);
+        }
 
         if(!mysqli_stmt_prepare($stmt, $sql)){
             //header("location: ../index.php?error=internal");
+            
             exit();
+        }
+
+        if($role === "Student"){
+            mysqli_stmt_bind_param($stmt, "s",$section);
         }
 
         mysqli_stmt_execute($stmt);
@@ -248,7 +273,12 @@
 
         while($row = mysqli_fetch_assoc($resultData)){
 
-            echo "<option value='" . $row["username"] . "'>" . $row["fname"] . " " . $row["lname"] . "</option>";
+            if($role === "Student"){
+                echo "<option value='" . $row["evaluatee_username"] . "'>" . $row["evaluatee_fname"] . " " . $row["evaluatee_lname"] . "</option>";
+            }
+            else{
+                echo "<option value='" . $row["username"] . "'>" . $row["fname"] . " " . $row["lname"] . "</option>";
+            }
         
         }
 

@@ -74,9 +74,11 @@
             ?>
 
             <br>
-            <button type="submit" class="btn btn-primary" id="loginBtn" name="loginBtn">Login</button>
-
-
+            <div align="center">
+                <button type="submit" class="btn btn-primary" id="loginBtn" name="loginBtn">Login</button> or
+                <a href="register.php">Register</a>
+            </div>
+            
         </form>
         
 
