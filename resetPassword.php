@@ -11,9 +11,9 @@
     <div id="login-pane">
 
 
-        <form id="login-form" action="functions/authenticate.php" method="POST">
+        <form id="login-form" action="functions/resetPassword.php" method="POST">
 
-            <h4 class="text-center">Login</h4>
+            <h4 class="text-center">Reset Password</h4>
 
             <br>
             <div class="form-group">
@@ -21,8 +21,12 @@
                 <input type="text" class="form-control" id="username" name="username" required>
             </div>
             <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" class="form-control" id="password" name="password" required>
+                <label for="currentPassword">Current Password</label>
+                <input type="password" class="form-control" id="currentPassword" name="currentPassword" required>
+            </div>
+            <div class="form-group">
+                <label for="newPassword">New Password</label>
+                <input type="password" class="form-control" id="newPassword" name="newPassword" required>
             </div>
 
             <?php 
@@ -37,14 +41,20 @@
                     else if ($_GET["error"] === "noaccount"){
                         echo '<label class="error_message">Account does not exist</label>';
                     }
-                    else if ($_GET["error"] === "created"){
-                        echo '<label class="error_message" style="color:green;">Account created</label>';
+                    else if ($_GET["error"] === "invalid"){
+                        echo '<label class="error_message">Invalid username</label>';
+                    }
+                    else if ($_GET["error"] === "internal"){
+                        echo '<label class="error_message">Internal error. Try again.</label>';
+                    }
+                    else if ($_GET["error"] === "success"){
+                        echo '<label class="error_message" style="color:green;">Password reset successful!</label>';
                     }
                 }
             ?>
 
             <br>
-            <button type="submit" class="btn btn-primary" id="loginBtn" name="loginBtn">Login</button>
+            <button type="submit" class="btn btn-primary" id="loginBtn" name="loginBtn">Reset</button>
 
 
         </form>

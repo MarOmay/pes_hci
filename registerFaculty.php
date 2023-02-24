@@ -9,15 +9,15 @@
     </div>
 
     <div id="register-pane">
-        <form id="register-form" action="functions/createUser.php" method="POST">
+        <form id="register-form" action="functions/createFaculty.php" method="POST">
 
-            <h4 class="text-center">Registration</h4>
+            <h4 class="text-center">New Employee</h4>
 
             <br>
             <div class="row">
                 <div class="col-sm-5">
                     <div class="form-group">
-                        <label for="username">Learner Reference Number</label>
+                        <label for="username">Employee ID</label>
                         <input type="text" class="form-control" id="username" name="username" required>
                     </div>
                     <div class="form-group">
@@ -35,33 +35,28 @@
 
                 <div class="col-sm-5">
                     <div class="form-group">
-                        <label for="section">Section</label>
-                        <select class="form-control" id="section" name="section" required>
+                        <label for="role">Role</label>
+                        <select class="form-control" id="role" name="role" required>
                             <?php
                                 include_once "includes/dbh.inc.php";
                                 include_once "includes/functions.inc.php";
-                                getSections($conn);
+                                getRoles($conn,array("Student","Master"));
                             ?>
                         </select>
                     </div>
+
                     <div class="form-group">
-                        <label for="password">Password</label>
-                        <input type="password" class="form-control" id="password" name="password" required>
+                        <label for="sections-listbox">Classes</label>
+                        <div class="container-fluid" id="sections-listbox">
+
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="cpassword">Confirm Password</label>
-                        <input type="password" class="form-control" id="cpassword" name="cpassword" required>
-                    </div>
+
+                    <br>
 
                     <?php 
                         if (isset($_GET["error"])){
-                            if ($_GET["error"] === "invalid"){
-                                echo '<label class="error_message">Invalid LRN.</label>';
-                            }
-                            else if ($_GET["error"] === "pass"){
-                                echo '<label class="error_message">Password did not match.</label>';
-                            }
-                            else if ($_GET["error"] === "internal"){
+                            if ($_GET["error"] === "internal"){
                                 echo '<label class="error_message">Server Error. Try Again.</label>';
                             }
                             else if ($_GET["error"] === "taken"){
@@ -74,8 +69,8 @@
 
             <div class="row">
                 <div class="col-sm-12" align="right">
-                    <br>
-                    <button type="submit" class="btn btn-primary" id="registerBtn" name="registerBtn">Register</button>
+                    
+                    <button type="submit" class="btn btn-primary" id="registerBtn" name="registerBtn">Register Employee</button>
                 </div>
             </div>
 

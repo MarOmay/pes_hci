@@ -2,8 +2,8 @@
 
     include_once "dbh.inc.php";
 
-    function attemptLogin($conn, $lrn, $password){
-        $sql = "SELECT * FROM users WHERE lrn = ?";
+    function attemptLogin($conn, $username, $password){
+        $sql = "SELECT * FROM users WHERE username = ?";
         $stmt = mysqli_stmt_init($conn);
 
         if(!mysqli_stmt_prepare($stmt, $sql)){
@@ -11,7 +11,7 @@
             exit();
         }
 
-        mysqli_stmt_bind_param($stmt, "s", $lrn);
+        mysqli_stmt_bind_param($stmt, "s", $username);
         mysqli_stmt_execute($stmt);
 
         $resultData = mysqli_stmt_get_result($stmt);
@@ -19,12 +19,12 @@
         $row = mysqli_fetch_assoc($resultData);
 
         if($row === false){
-            header("location: index.php?error=loginfailed");
+            header("location: ../index.php?error=loginfailed");
             exit();
         }
 
-        if(empty($row["lrn"])){
-            header("location: index.php?error=noaccount");
+        if(empty($row["username"])){
+            header("location: ../index.php?error=noaccount");
         }
         else{
             $isMatch = password_verify($password, $row["password"]);
@@ -33,7 +33,7 @@
                 echo "alert('Logged in!');";
             }
             else{
-                header("location: index.php?error=incorrectpassword");
+                header("location: ../index.php?error=incorrectpassword");
                 exit();
             }
         }
@@ -41,16 +41,16 @@
         mysqli_stmt_close($stmt);
     }
 
-    function userExist($conn, $lrn){
-        $sql = "SELECT * FROM users WHERE lrn = ?";
+    function userExist($conn, $username){
+        $sql = "SELECT * FROM users WHERE username = ?";
         $stmt = mysqli_stmt_init($conn);
 
         if(!mysqli_stmt_prepare($stmt, $sql)){
-            header("location: register.php?error=internal");
+            header("location: ../register.php?error=internal");
             exit();
         }
 
-        mysqli_stmt_bind_param($stmt, "s", $lrn);
+        mysqli_stmt_bind_param($stmt, "s", $username);
         mysqli_stmt_execute($stmt);
 
         $resultData = mysqli_stmt_get_result($stmt);
@@ -58,11 +58,11 @@
         $row = mysqli_fetch_assoc($resultData);
 
         if($row === false){
-            header("location: register.php?error=internal");
+            header("location: ../register.php?error=internal");
             exit();
         }
 
-        if(empty($row["lrn"])){
+        if(empty($row["username"])){
             mysqli_stmt_close($stmt);
             return false;
         }
@@ -72,35 +72,168 @@
         }
     }
 
-    function registerUser($conn, $lrn, $fname, $lname, $password){
+    function registerUser($conn, $username, $fname, $lname, $section, $password, $role){
 
-        $exist = userExist($conn, $lrn);
+        $exist = userExist($conn, $username);
+
+        $routeBack = "/";
+
+        if($role === "Student"){
+            $routeBack = "location: ../register.php?error=taken";
+        }
+        else if($role === "Teaching" || $role === "Non-Teaching"){
+            $routeBack = "location: ../registerFaculty.php?error=taken";
+        }
 
         if ($exist){
-            header("location: register.php?error=taken");
+            header($routeBack);
             exit();
         }
 
         $stmt = mysqli_stmt_init($conn);
 
-        $sql = "INSERT INTO users (id, lrn, fname, lname, password, created) VALUES (NULL,?,?,?,?,?)";
+        $sql = "INSERT INTO users (id, username, fname, lname, section, password, created, role) VALUES (NULL,?,?,?,?,?,?,?)";
 
         if(!mysqli_stmt_prepare($stmt, $sql)){
-            header("location: register.php?error=internal");
+            header($routeBack);
             exit();
         }
 
+        if ($role === "Teaching" || $role === "Non-Teaching"){
+            $password = $username . strtoupper($fname[0]) . strtoupper($lname[0]);
+        }
+
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+
         $date = date("M d, Y h:i a");
 
-        mysqli_stmt_bind_param($stmt, "sssss", $lrn, $fname, $lname, $hashedPassword, $date);
+        mysqli_stmt_bind_param($stmt, "sssssss", $username, $fname, $lname, $section, $hashedPassword, $date, $role);
         mysqli_stmt_execute($stmt);
 
         mysqli_stmt_close($stmt);
 
-        header("location: index.php?error=none");
+        header("location: ../index.php?error=created");
         exit();
 
+    }
+
+    function getSections($conn){
+        $sql = "SELECT * FROM sections";
+        $stmt = mysqli_stmt_init($conn);
+
+        if(!mysqli_stmt_prepare($stmt, $sql)){
+            header("location: ../register.php?error=internal");
+            exit();
+        }
+
+        mysqli_stmt_execute($stmt);
+
+        $resultData = mysqli_stmt_get_result($stmt);
+
+        while($row = mysqli_fetch_assoc($resultData)){
+            $section = $row["section"];
+            echo "<option value='" . $section . "'>" . $section . "</option>";
+        }
+
+        mysqli_stmt_close($stmt);
+    }
+
+    function getRoles($conn, $exclude){
+        $sql = "SELECT * FROM roles";
+        $stmt = mysqli_stmt_init($conn);
+
+        if(!mysqli_stmt_prepare($stmt, $sql)){
+            header("location: ../registerFaculty.php?error=internal");
+            exit();
+        }
+
+        mysqli_stmt_execute($stmt);
+
+        $resultData = mysqli_stmt_get_result($stmt);
+
+        while($row = mysqli_fetch_assoc($resultData)){
+
+            $toExclude = false;
+
+            $role = $row["role"];
+            
+            foreach($exclude as $ex){
+                if($role === $ex){
+                    $toExclude = true;
+                }
+            }
+
+            if($toExclude === false){
+                echo "<option value='" . $role . "'>" . $role . "</option>";
+            }
+        
+        }
+
+        mysqli_stmt_close($stmt);
+    }
+
+    function resetPassword($conn, $username, $currentPassword, $newPassword){
+        $sql = "SELECT * FROM users WHERE username = ?";
+        $stmt = mysqli_stmt_init($conn);
+
+        if(!mysqli_stmt_prepare($stmt, $sql)){
+            header("location: ../resetPassword.php?error=internal");
+            exit();
+        }
+
+        mysqli_stmt_bind_param($stmt, "s", $username);
+        mysqli_stmt_execute($stmt);
+
+        $resultData = mysqli_stmt_get_result($stmt);
+
+        $row = mysqli_fetch_assoc($resultData);
+
+        if($row === false){
+            header("location: ../resetPassword.php?error=loginfailed");
+            exit();
+        }
+
+        if(empty($row["username"])){
+            header("location: ../resetPassword.php?error=noaccount");
+        }
+        else{
+
+            $isMatch = false;
+
+            if(empty($row["password"])){
+                $isMatch = true;
+            }
+            else{
+                $isMatch = password_verify($currentPassword, $row["password"]);
+            }
+
+            if($isMatch === true){
+                $stmt = mysqli_stmt_init($conn);
+
+                $sql = "UPDATE users SET password=? WHERE username=?";
+
+                if(!mysqli_stmt_prepare($stmt, $sql)){
+                    header("location: ../resetPassword.php?error=internal");
+                    exit();
+                }
+
+                $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+
+                mysqli_stmt_bind_param($stmt, "ss", $hashedPassword, $username);
+                mysqli_stmt_execute($stmt);
+
+                mysqli_stmt_close($stmt);
+
+                header("location: ../resetPassword.php?error=success");
+                exit();
+            }
+            else{
+                header("location: ../resetPassword.php?error=incorrectpassword");
+                exit();
+            }
+        }
+
+        mysqli_stmt_close($stmt);
     }
 
 

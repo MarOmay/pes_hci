@@ -6,7 +6,7 @@
 
     <meta charset="utf-8">
 
-    <title>Bootstrap</title>
+    <title>PES-HCI</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
