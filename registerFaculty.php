@@ -30,6 +30,20 @@
                         <label for="lname">Last name</label>
                         <input type="text" class="form-control" id="lname" name="lname" required>
                     </div>
+
+                    <?php 
+                        if (isset($_GET["error"])){
+                            if ($_GET["error"] === "internal"){
+                                echo '<label class="error_message">Server Error. Try Again.</label>';
+                            }
+                            else if ($_GET["error"] === "taken"){
+                                echo '<label class="error_message">Employee ID is taken.</label>';
+                            }
+                            else if ($_GET["error"] === "success"){
+                                echo '<label class="error_message" style="color:green;">Account successfully created!</label>';
+                            }
+                        }
+                    ?>
                 </div>
 
                 <!-- spacer -->
@@ -48,24 +62,16 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="sections-listbox">Classes</label>
+                        <label for="sections-listbox">Evaluatee</label>
                         <div class="container-fluid" id="sections-listbox">
-
+                            <?php 
+                                getSectionsForChecklist($conn);
+                            ?>
                         </div>
                     </div>
 
                     <br>
 
-                    <?php 
-                        if (isset($_GET["error"])){
-                            if ($_GET["error"] === "internal"){
-                                echo '<label class="error_message">Server Error. Try Again.</label>';
-                            }
-                            else if ($_GET["error"] === "taken"){
-                                echo '<label class="error_message">Account already exists.</label>';
-                            }
-                        }
-                    ?>
                 </div>
             </div>
 

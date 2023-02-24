@@ -1,5 +1,9 @@
 <?php 
     include_once "header.php";
+
+    if(isset($_SESSION["id"])){
+        header("location: functions/logout.php?redirect=../register.php");
+    }
 ?>
 
 <div class="container-fluid border" id="login-container">
@@ -40,7 +44,7 @@
                             <?php
                                 include_once "includes/dbh.inc.php";
                                 include_once "includes/functions.inc.php";
-                                getSections($conn);
+                                getSectionsForDropDown($conn);
                             ?>
                         </select>
                     </div>

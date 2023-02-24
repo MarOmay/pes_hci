@@ -13,7 +13,7 @@
 
         <form id="login-form" action="functions/resetPassword.php" method="POST">
 
-            <h4 class="text-center">Reset Password</h4>
+            <h4 class="text-center">Change Password</h4>
 
             <br>
             <div class="form-group">
@@ -54,7 +54,7 @@
             ?>
 
             <br>
-            <button type="submit" class="btn btn-primary" id="loginBtn" name="loginBtn">Reset</button>
+            <button type="submit" class="btn btn-primary" id="loginBtn" name="loginBtn">Submit</button>
 
 
         </form>

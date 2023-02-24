@@ -1,5 +1,32 @@
 <?php
     include_once "header.php";
+
+    if(isset($_SESSION["id"])){
+
+        if(isset($_SESSION["id"])){
+
+            //go to corresponding homepage
+            $dashboardAddress = "index.php?error=incorrectpassword";
+            if($_SESSION["role"] === "Student"){
+                $dashboardAddress = "student_home.php";
+            }
+            else if($_SESSION["role"] === "Teaching" || $_SESSION["role"] === "Non-Teaching"){
+                $dashboardAddress = "employee_home.php";
+            }
+            else if($_SESSION["role"] === "Master"){
+                //$dashboardAddress = "master_home.php";
+                $dashboardAddress = "registerFaculty.php";
+            }
+            header("location: ".$dashboardAddress);
+
+        }
+        else {
+            header("location: functions/logout.php");
+            exit();
+        }
+
+    }
+
 ?>
 
 <div class="container-fluid border" id="login-container">

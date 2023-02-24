@@ -57,6 +57,9 @@
                 $_SESSION["lname"] = $row["lname"];
                 $_SESSION["section"] = $row["section"];
                 $_SESSION["role"] = $row["role"];
+
+                header("location: ../index.php");
+
             }
             else{
                 header("location: ../index.php?error=incorrectpassword");
@@ -138,12 +141,18 @@
 
         mysqli_stmt_close($stmt);
 
-        header("location: ../index.php?error=created");
+        if($role === "Teaching" || $role === "Non-Teaching"){
+            header("location: ../registerFaculty.php?error=success");
+        }
+        else {
+            header("location: ../index.php?error=created");
+        }
+
         exit();
 
     }
 
-    function getSections($conn){
+    function getSectionsForDropDown($conn){
         $sql = "SELECT * FROM sections";
         $stmt = mysqli_stmt_init($conn);
 
@@ -159,6 +168,27 @@
         while($row = mysqli_fetch_assoc($resultData)){
             $section = $row["section"];
             echo "<option value='" . $section . "'>" . $section . "</option>";
+        }
+
+        mysqli_stmt_close($stmt);
+    }
+
+    function getSectionsForChecklist($conn){
+        $sql = "SELECT * FROM sections";
+        $stmt = mysqli_stmt_init($conn);
+
+        if(!mysqli_stmt_prepare($stmt, $sql)){
+            header("location: ../register.php?error=internal");
+            exit();
+        }
+
+        mysqli_stmt_execute($stmt);
+
+        $resultData = mysqli_stmt_get_result($stmt);
+
+        while($row = mysqli_fetch_assoc($resultData)){
+            $section = $row["section"];
+            echo "<input type='checkbox' class='form-check-input' name=\"students[]\" value='$section' /> $section<br>";
         }
 
         mysqli_stmt_close($stmt);
@@ -196,6 +226,34 @@
         }
 
         mysqli_stmt_close($stmt);
+    }
+
+    function getUsersToEvaluate($conn, $username, $section, $role){
+
+        $sql = "SELECT username, fname, lname, role FROM users WHERE role='Teaching' or role='Non-Teching'";
+        if($role === "Student"){
+            $sql = "SELECT username, fname, lname, role FROM users WHERE role='Teaching'";
+        }
+        
+        $stmt = mysqli_stmt_init($conn);
+
+        if(!mysqli_stmt_prepare($stmt, $sql)){
+            //header("location: ../index.php?error=internal");
+            exit();
+        }
+
+        mysqli_stmt_execute($stmt);
+
+        $resultData = mysqli_stmt_get_result($stmt);
+
+        while($row = mysqli_fetch_assoc($resultData)){
+
+            echo "<option value='" . $row["username"] . "'>" . $row["fname"] . " " . $row["lname"] . "</option>";
+        
+        }
+
+        mysqli_stmt_close($stmt);
+
     }
 
     function resetPassword($conn, $username, $currentPassword, $newPassword){
