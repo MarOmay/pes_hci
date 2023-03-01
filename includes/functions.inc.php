@@ -383,7 +383,7 @@
                     <h6 class="">
                         <b>' . $row["factor"] . '</b>
                     </h6>
-                    <h6 class="">' . $row["description"] . '</h6>
+                    <p class="h6">' . $row["description"] . '</p>
                 </div>
 
                 <div class="col-sm-2">
