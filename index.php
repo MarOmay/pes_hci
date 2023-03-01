@@ -11,7 +11,7 @@
                 $dashboardAddress = "student_home.php";
             }
             else if($_SESSION["role"] === "Teaching" || $_SESSION["role"] === "Non-Teaching"){
-                $dashboardAddress = "employee_home.php";
+                $dashboardAddress = "student_home.php";
             }
             else if($_SESSION["role"] === "Master"){
                 //$dashboardAddress = "master_home.php";

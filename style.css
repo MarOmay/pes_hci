@@ -101,3 +101,11 @@ body {
     align-items: center;
     justify-content: center;
 }
+
+.evaluation-pane {
+    overflow-y: auto;
+}
+
+.comment_field {
+    height: 30px;
+}

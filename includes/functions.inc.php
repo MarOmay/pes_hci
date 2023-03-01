@@ -11,7 +11,15 @@
     function checkAuthorization($role){
         if (isset($_SESSION["role"]) === true){
 
-            if ($_SESSION["role"] !== $role){
+            $authorized = false;
+
+            foreach($role as $r){
+                if($r === $_SESSION["role"]){
+                    $authorized= true;
+                }
+            }
+
+            if ($authorized === false){
                 header("location: unauthorized.php");
                 exit();
             }
@@ -147,7 +155,7 @@
 
                 foreach ($_POST["sections"] as $evaluator){
                     $stmt = mysqli_stmt_init($conn);
-                    $sql = "INSERT INTO evaluatee (id, evaluatee_username, evaluatee_fname, evaluatee_lname, evaluator) VALUES (NULL,?,?,?,?)";
+                    $sql = "INSERT INTO evaluatees (id, evaluatee_username, evaluatee_fname, evaluatee_lname, evaluator) VALUES (NULL,?,?,?,?)";
                     mysqli_stmt_prepare($stmt, $sql);
                     mysqli_stmt_bind_param($stmt, "ssss", $username, $fname, $lname, $evaluator);
                     mysqli_stmt_execute($stmt);
@@ -348,6 +356,125 @@
         }
 
         mysqli_stmt_close($stmt);
+    }
+
+
+    // for evaluationForm.php
+
+    function getFactors($conn){
+        $sql = "SELECT * FROM factors";
+        $stmt = mysqli_stmt_init($conn);
+
+        if(!mysqli_stmt_prepare($stmt, $sql)){
+            header("location: ../index.php?error=internal");
+            exit();
+        }
+
+        mysqli_stmt_execute($stmt);
+
+        $resultData = mysqli_stmt_get_result($stmt);
+
+        while($row = mysqli_fetch_assoc($resultData)){
+            
+            echo '<br>
+            <div class="row">
+
+                <div class="col-sm-10">
+                    <h6 class="">
+                        <b>' . $row["factor"] . '</b>
+                    </h6>
+                    <h6 class="">' . $row["description"] . '</h6>
+                </div>
+
+                <div class="col-sm-2">
+
+                    <div class="form-group">
+                        <select class="form-control" id="rating" name="rating_' . $row["id"] . '" required>';
+
+            for($i = $row["max_rate"]; $i>0; $i--){
+                echo "<option value='" . $i . "'>" . $i . "</option>";
+            }
+
+            echo "</select></div></div></div>";
+        
+        }
+
+        mysqli_stmt_close($stmt);
+    }
+
+    function isEvaluated($conn, $evaluator_username, $evaluatee_username){
+        $sql = "SELECT COUNT(*) AS total FROM evaluations WHERE evaluator=? AND evaluatee=?";
+        $stmt = mysqli_stmt_init($conn);
+
+        if(!mysqli_stmt_prepare($stmt, $sql)){
+            header("location: ../index.php?error=internal");
+            exit();
+        }
+
+        mysqli_stmt_bind_param($stmt,"ss",$evaluator_username, $evaluatee_username);
+
+        mysqli_stmt_execute($stmt);
+
+        $resultData = mysqli_stmt_get_result($stmt);
+
+        $row = mysqli_fetch_assoc($resultData);
+
+        if($row["total"] > 0){
+            return true;
+        }
+
+        mysqli_stmt_close($stmt);
+
+        return false;
+    }
+
+    function getEvaluateeName($conn, $username){
+        $sql = "SELECT username, fname, lname FROM users WHERE username=?";
+        $stmt = mysqli_stmt_init($conn);
+
+        if(!mysqli_stmt_prepare($stmt, $sql)){
+            header("location: ../index.php?error=internal");
+            exit();
+        }
+
+        mysqli_stmt_bind_param($stmt,"s",$username);
+
+        mysqli_stmt_execute($stmt);
+
+        $resultData = mysqli_stmt_get_result($stmt);
+
+        while ($row = mysqli_fetch_assoc($resultData)){
+            if($row["username"] == $username){
+                $fname = $row["fname"];
+                $lname = $row["lname"];
+
+                echo "<h4 class='text-left'>" . $lname . ", " . $fname . "</h4>";
+                echo "<input type='text' class='text-left' name='username' value='" . $username . "' style='display:none;'>";
+            }
+        }
+
+        mysqli_stmt_close($stmt);
+    }
+
+    function postEval($conn, $evaluator_username, $evaluatee_username, $responses){
+        $sql = "INSERT INTO evaluations (id, evaluator, evaluatee, f1, f2, f3, f4, f5, f6, f7, f8, f9, c1, c2)
+                VALUES (NULL,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+        $stmt = mysqli_stmt_init($conn);
+
+        if(!mysqli_stmt_prepare($stmt, $sql)){
+            header("location: ../index.php?error=internal");
+            exit();
+        }
+
+        mysqli_stmt_bind_param($stmt,"ssiiiiiiiiiss",$evaluator_username, $evaluatee_username,
+                                $responses["1"],$responses["2"],$responses["3"],
+                                $responses["4"],$responses["5"],$responses["6"],$responses["7"],
+                                $responses["8"],$responses["9"],$responses["c1"],$responses["c2"]);
+
+        mysqli_stmt_execute($stmt);
+
+        header("location: ../index.php");
+
     }
 
 

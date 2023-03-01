@@ -2,7 +2,7 @@
     include_once "header.php";
     include_once "includes/functions.inc.php";
     checkLoginStatus();
-    checkAuthorization("Student");
+    checkAuthorization(array("Student","Teaching","Non-Teaching"));
 ?>
 
 <div class="container-fluid border" id="login-container">
@@ -12,8 +12,8 @@
     </div>
 
     <div id="register-pane">
-        <form id="register-form" method="POST">
-
+        <form id="register-form" action="functions/newEval.php" method="POST">
+            
             <br>
             <div class="row">
                 <div class="col-sm-5">
