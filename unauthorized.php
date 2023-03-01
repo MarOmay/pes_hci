@@ -10,7 +10,14 @@
 
     <div id="unauth-pane">
         <div class="container-fluid d-flex justify-content-center">
-            <p class="h1"><span class="badge bg-danger text-white">Unauthorized Access</span></p>
+            <?php
+                if(isset($_GET["username"])){
+                    echo '<p class="h1"><span class="badge bg-success text-white">Evaluation submitted</span></p>';
+                }
+                else{
+                    echo '<p class="h1"><span class="badge bg-danger text-white">Unauthorized Access</span></p>';
+                }
+            ?>
         </div>
         <br>
         <div class="container-fluid d-flex justify-content-center">
