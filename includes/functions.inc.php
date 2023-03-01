@@ -253,7 +253,7 @@
 
     function getUsersToEvaluate($conn, $username, $section, $role){
 
-        $sql = "SELECT username, fname, lname, role FROM users WHERE role='Teaching' or role='Non-Teching'";
+        $sql = "SELECT username, fname, lname, role FROM users WHERE role='Teaching' or role='Non-Teaching'";
         $stmt = mysqli_stmt_init($conn);
 
         if($role === "Student"){
@@ -284,7 +284,7 @@
             if($role === "Student"){
                 echo "<option value='" . $row["evaluatee_username"] . "'>" . $row["evaluatee_fname"] . " " . $row["evaluatee_lname"] . "</option>";
             }
-            else{
+            else if (isEvaluated($conn, $username, $row["username"]) !== true && $username !== $row["username"]){
                 echo "<option value='" . $row["username"] . "'>" . $row["fname"] . " " . $row["lname"] . "</option>";
             }
         
@@ -383,13 +383,15 @@
                     <h6 class="">
                         <b>' . $row["factor"] . '</b>
                     </h6>
-                    <p class="h6">' . $row["description"] . '</p>
+                    <p class="">' . $row["description"] . '</p>
                 </div>
 
                 <div class="col-sm-2">
 
                     <div class="form-group">
                         <select class="form-control" id="rating" name="rating_' . $row["id"] . '" required>';
+
+            echo "<option value=''>--</option>";
 
             for($i = $row["max_rate"]; $i>0; $i--){
                 echo "<option value='" . $i . "'>" . $i . "</option>";
