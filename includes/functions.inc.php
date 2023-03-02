@@ -476,5 +476,29 @@
 
     }
 
+    // FOR MASTER USE ONLY
+
+    function getEmployeesAsChecklist($conn){
+        $sql = "SELECT * FROM users WHERE role='Teaching' OR role='Non-Teaching'";
+        $stmt = mysqli_stmt_init($conn);
+
+        if(!mysqli_stmt_prepare($stmt, $sql)){
+            header("location: ../register.php?error=internal");
+            exit();
+        }
+
+        mysqli_stmt_execute($stmt);
+
+        $resultData = mysqli_stmt_get_result($stmt);
+
+        while($row = mysqli_fetch_assoc($resultData)){
+            $username = $row["username"];
+            $name = $row["fname"] . " " . $row["lname"];
+            echo "<input type='checkbox' class='form-check-input' name=\"employees[]\" value='$username' /> $name<br>";
+        }
+
+        mysqli_stmt_close($stmt);
+    }
+
 
 ?>

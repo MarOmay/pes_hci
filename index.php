@@ -14,8 +14,7 @@
                 $dashboardAddress = "student_home.php";
             }
             else if($_SESSION["role"] === "Master"){
-                //$dashboardAddress = "master_home.php";
-                $dashboardAddress = "registerFaculty.php";
+                $dashboardAddress = "master_home.php";
             }
             header("location: ".$dashboardAddress);
 
