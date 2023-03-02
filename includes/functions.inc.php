@@ -516,5 +516,44 @@
         mysqli_stmt_close($stmt);
     }
 
+    function deleteSection($conn, $section){
+        $sql = "DELETE FROM sections WHERE section=?";
+        $stmt = mysqli_stmt_init($conn);
+
+        if(!mysqli_stmt_prepare($stmt, $sql)){
+            header("location: ../register.php?error=internal");
+            exit();
+        }
+
+        mysqli_stmt_bind_param($stmt,"s",$section);
+
+        mysqli_stmt_execute($stmt);
+
+        mysqli_stmt_close($stmt);
+    }
+
+    function createNewSection($conn, $section){
+        try{
+            $sql = "INSERT INTO sections (id,section) VALUES (NULL, ?)";
+
+        $stmt = mysqli_stmt_init($conn);
+
+        if(!mysqli_stmt_prepare($stmt, $sql)){
+            header("location: ../register.php?error=internal");
+            exit();
+        }
+
+        mysqli_stmt_bind_param($stmt,"s",$section);
+
+        mysqli_stmt_execute($stmt);
+
+        mysqli_stmt_close($stmt);
+        }
+        catch(Exception $e){
+            //pass
+        }
+        
+    }
+
 
 ?>

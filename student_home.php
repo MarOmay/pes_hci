@@ -34,7 +34,7 @@
                 <div class="col-sm-5">
                     
                     <div class="form-group">
-                        <label for="facultyName">Faculty Name</label>
+                        <label for="facultyName">Evaluatee Name</label>
                         <select class="form-control" id="facultyName" name="facultyName" required>
                             <?php
                                 include_once "includes/dbh.inc.php";

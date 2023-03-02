@@ -16,10 +16,10 @@
         <div class="container-fluid" id="master-home-panel">
             <button class="custom_btn" onclick="window.location.href='master_removeFaculty.php'">Manage Employees</button>
             <button class="custom_btn">Generate <br> Reports</button>
-            <button class="custom_btn">Manage <br> Sections</button>
+            <button class="custom_btn" onclick="window.location.href='master_manageSections.php'">Manage <br> Sections</button>
 
             <button class="custom_btn"><br><br></button>
-            <button class="custom_btn"><br><br></button>
+            <button class="custom_btn">Reset <br> Password</button>
             <button class="custom_btn">Reset <br> Database</button>
         </div>
 

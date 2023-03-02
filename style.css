@@ -79,6 +79,16 @@ body {
     justify-content: center;
 }
 
+#new-section-pane {
+    background-color: white;
+    height: 350px;
+    padding: 2%;
+    margin-top: 0px;
+
+    display: flex;
+    justify-content: center;
+}
+
 #register-form {
     width: 100%;
     margin-left: 10%;
@@ -160,3 +170,7 @@ body {
 .custom_btn:active {
     transform: translateY(-1px);
   }
+
+#sectionInputText {
+    margin-bottom: 10px;
+}
