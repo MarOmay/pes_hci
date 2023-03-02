@@ -257,11 +257,7 @@
         $stmt = mysqli_stmt_init($conn);
 
         if($role === "Student"){
-            //$sql = "SELECT * FROM evaluatee WHERE evaluator=?";
-            $sql = "SELECT * FROM evaluatees
-            WHERE evaluatee_username NOT IN (SELECT evaluatee FROM evaluations)
-            AND evaluator NOT IN (SELECT evaluator FROM evaluations)
-            AND evaluator=?";
+            $sql = "SELECT * FROM evaluatees WHERE evaluator=?";
             $stmt = mysqli_stmt_init($conn);
         }
 
@@ -282,7 +278,8 @@
         while($row = mysqli_fetch_assoc($resultData)){
 
             if($role === "Student"){
-                echo "<option value='" . $row["evaluatee_username"] . "'>" . $row["evaluatee_fname"] . " " . $row["evaluatee_lname"] . "</option>";
+                if(isEvaluated($conn, $username, $row["evaluatee_username"]) !== true)
+                    echo "<option value='" . $row["evaluatee_username"] . "'>" . $row["evaluatee_fname"] . " " . $row["evaluatee_lname"] . "</option>";
             }
             else if (isEvaluated($conn, $username, $row["username"]) !== true && $username !== $row["username"]){
                 echo "<option value='" . $row["username"] . "'>" . $row["fname"] . " " . $row["lname"] . "</option>";
@@ -475,7 +472,7 @@
 
         mysqli_stmt_execute($stmt);
 
-        header("location: ../index.php");
+        header("location: ../unauthorized.php?username=" . $evaluatee_username);
 
     }
 

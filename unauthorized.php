@@ -21,7 +21,14 @@
         </div>
         <br>
         <div class="container-fluid d-flex justify-content-center">
-            <button class="btn btn-primary" onclick="history.back()">Go Back</button>
+            <?php
+                if(isset($_GET["username"])){
+                    echo '<button class="btn btn-primary" onclick="window.location.href=\'index.php\'">Home</button>';
+                }
+                else{
+                    echo '<button class="btn btn-primary" onclick="history.back()">Go Back</button>';
+                }
+            ?>
         </div>
     </div>
 

@@ -31,7 +31,12 @@
         $responses["c1"] = $_POST["c1"];
         $responses["c2"] = $_POST["c2"];
 
-        postEval($conn, $evaluator_username, $evaluatee_username, $responses);
+        if(isEvaluated($conn, $evaluator_username, $evaluatee_username)){
+            header("location: ../unauthorized.php?username=" . $_POST["facultyName"]);
+        }
+        else{
+            postEval($conn, $evaluator_username, $evaluatee_username, $responses);
+        }
 
     }
     else{
