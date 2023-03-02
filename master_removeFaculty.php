@@ -11,10 +11,13 @@
     </div>
 
     <div id="register-pane">
-        <form id="register-form" action="" method="POST">
+        <form id="register-form" action="functions/deleteEmployee.php" method="POST">
 
             <br>
+
             <div class="row">
+                <div class="col-sm-1"></div>
+
                 <div class="col-sm-5">
                     <p class="h6">Employee Accounts</p>
                     <div class="container-fluid" id="emp_listbox">
@@ -23,26 +26,22 @@
                             include_once "includes/functions.inc.php";
 
                             getEmployeesAsChecklist($conn);
-                            getEmployeesAsChecklist($conn);
-                            getEmployeesAsChecklist($conn);
                         ?>
                     </div>
-                    <br>
-                    <div align="center">
-                        <button onclick="isChecked()" class="btn btn-primary" id="registerBtn" name="registerBtn">Delete Selected</button>
-                        | 
-                        <button type="submit" class="btn btn-danger" id="registerBtn" name="registerBtn">Delete ALL</button>
+                    <button onclick="isChecked()" class="btn btn-danger" id="deleteAccountBtn" name="deleteSelectedBtn">Delete Selected</button>
+
+                </div>
+
+                <div class="col-sm-4">
+                    <div align="right">
+                        <p class="h6">&nbsp</p>
+                        <button type="button" class="btn btn-success" onclick="window.location.href='registerFaculty.php'">New Employee</button>
+                        <br><br><br><br>
+                        
                     </div>
-
                 </div>
 
-                <!-- spacer -->
                 <div class="col-sm-2"></div>
-
-                <div class="col-sm-5">
-                    
-
-                </div>
             </div>
 
         </form>
@@ -57,16 +56,21 @@
 </div>
 
 <script type="text/javascript">
+
     function isChecked(){
         const checkboxes = Array.from(document.querySelectorAll(".form-check-input"));
         if (checkboxes.reduce((acc, curr) => acc || curr.checked, false)){
 
-            var password = prompt("Password","");
+            var confirmation = prompt("Type \"DELETE\" to confim deletion of selected accounts.","");
 
-            //document.getElementById("myForm").submit();
+            if(confirmation == "DELETE"){
+                document.getElementById("register-form").submit();
+            }
+
         }
         else{
             alert("Please select at least one Employee Account to delete.");
         }
     }
+
 </script>

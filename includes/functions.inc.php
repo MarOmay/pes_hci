@@ -500,5 +500,21 @@
         mysqli_stmt_close($stmt);
     }
 
+    function deleteEmployee($conn, $username){
+        $sql = "DELETE FROM users WHERE username=?";
+        $stmt = mysqli_stmt_init($conn);
+
+        if(!mysqli_stmt_prepare($stmt, $sql)){
+            header("location: ../register.php?error=internal");
+            exit();
+        }
+
+        mysqli_stmt_bind_param($stmt,"i",$username);
+
+        mysqli_stmt_execute($stmt);
+
+        mysqli_stmt_close($stmt);
+    }
+
 
 ?>

@@ -13,16 +13,15 @@
 
     <div id="register-pane">
 
-        <div class="container-fluid">
-            <button type="button" class="btn" onclick="window.location.href='registerFaculty.php'">Add Faculty</button>
-            <br>
-            <button type="button" class="btn" onclick="window.location.href='master_removeFaculty.php'">Remove Faculty</button>
-            <br>
-            <button type="button" class="btn " onclick="window.location.href='registerFaculty.php'">Add Faculty</button>
-            <br>
-        </div>
+        <div class="container-fluid" id="master-home-panel">
+            <button class="custom_btn" onclick="window.location.href='master_removeFaculty.php'">Manage Employees</button>
+            <button class="custom_btn">Generate <br> Reports</button>
+            <button class="custom_btn">Manage <br> Sections</button>
 
-        
+            <button class="custom_btn"><br><br></button>
+            <button class="custom_btn"><br><br></button>
+            <button class="custom_btn">Reset <br> Database</button>
+        </div>
 
     </div>
 
