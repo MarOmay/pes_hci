@@ -13,7 +13,13 @@
                 deleteEmployee($conn, $employee);
             }
 
-            header("location: ../master_removeFaculty.php?error=success");
+            header("location: ../master_manageEmployees.php?error=deleted");
         }
+        else{
+            header("location: ../master_manageEmployees.php?error=noselect");
+        }
+    }
+    else{
+        header("location: ../master_manageEmployees.php");
     }
 ?>

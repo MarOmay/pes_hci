@@ -119,7 +119,7 @@
             $routeBack = "location: ../register.php?error=taken";
         }
         else if($role === "Teaching" || $role === "Non-Teaching"){
-            $routeBack = "location: ../registerFaculty.php?error=taken";
+            $routeBack = "location: ../master_registerEmployee.php?error=taken";
         }
 
         if ($exist){
@@ -165,13 +165,42 @@
 
             }
 
-            header("location: ../registerFaculty.php?error=success");
+            header("location: ../master_registerEmployee.php?error=success");
         }
         else {
             header("location: ../index.php?error=created");
         }
 
         exit();
+
+    }
+
+    function updateUserInfo($conn, $username, $fname, $lname, $sections, $role){
+        $sql = "UPDATE users
+                SET fname=?, lname=?, role=?
+                WHERE username=?";
+        $stmt = mysqli_stmt_init($conn);
+
+        if(!mysqli_stmt_prepare($stmt, $sql)){
+            exit();
+        }
+
+        mysqli_stmt_bind_param($stmt, "ssss", $fname, $lname, $role, $username);
+        mysqli_stmt_execute($stmt);
+
+        deleteEvaluatee($conn, $username);
+
+        foreach ($sections as $evaluator){
+            $stmt = mysqli_stmt_init($conn);
+            $sql = "INSERT INTO evaluatees (id, evaluatee_username, evaluatee_fname, evaluatee_lname, evaluator) VALUES (NULL,?,?,?,?)";
+            mysqli_stmt_prepare($stmt, $sql);
+            mysqli_stmt_bind_param($stmt, "ssss", $username, $fname, $lname, $evaluator);
+            mysqli_stmt_execute($stmt);
+
+            mysqli_stmt_close($stmt);
+        }
+
+        header("location: ../master_manageEmployees.php?usernameSearchBox=" . $username . "&error=saved");
 
     }
 
@@ -196,7 +225,7 @@
         mysqli_stmt_close($stmt);
     }
 
-    function getSectionsForChecklist($conn){
+    function getSectionsForChecklist($conn, $sections){
         $sql = "SELECT * FROM sections";
         $stmt = mysqli_stmt_init($conn);
 
@@ -211,18 +240,32 @@
 
         while($row = mysqli_fetch_assoc($resultData)){
             $section = $row["section"];
-            echo "<input type='checkbox' class='form-check-input' name=\"sections[]\" value='$section' /> $section<br>";
+
+            $found = false;
+            foreach($sections as $s){
+                if($s === $section){
+                    $found = true;
+                }
+            }
+
+            if($found === true){
+                echo "<input type='checkbox' checked='checked' class='form-check-input' name=\"sections[]\" value='$section' /> $section<br>";
+            }
+            else{
+                echo "<input type='checkbox' class='form-check-input' name=\"sections[]\" value='$section' /> $section<br>";
+            }
+            
         }
 
         mysqli_stmt_close($stmt);
     }
 
-    function getRoles($conn, $exclude){
+    function getRoles($conn, $exclude, $curRole){
         $sql = "SELECT * FROM roles";
         $stmt = mysqli_stmt_init($conn);
 
         if(!mysqli_stmt_prepare($stmt, $sql)){
-            header("location: ../registerFaculty.php?error=internal");
+            header("location: ../master_registerEmployee.php?error=internal");
             exit();
         }
 
@@ -243,7 +286,13 @@
             }
 
             if($toExclude === false){
-                echo "<option value='" . $role . "'>" . $role . "</option>";
+                if($curRole === $role){
+                    echo "<option value='" . $role . "' selected='selected'>" . $role . "</option>";
+                }
+                else{
+                    echo "<option value='" . $role . "'>" . $role . "</option>";
+                }
+                
             }
         
         }
@@ -514,10 +563,46 @@
         mysqli_stmt_execute($stmt);
 
         mysqli_stmt_close($stmt);
+
+        deleteEvaluatee($conn, $username);
+    }
+
+    function deleteEvaluatee($conn, $username){
+        $sql = "DELETE FROM evaluatees WHERE evaluatee_username=?";
+        $stmt = mysqli_stmt_init($conn);
+
+        if(!mysqli_stmt_prepare($stmt, $sql)){
+            header("location: ../register.php?error=internal");
+            exit();
+        }
+
+        mysqli_stmt_bind_param($stmt,"i",$username);
+
+        mysqli_stmt_execute($stmt);
+
+        mysqli_stmt_close($stmt);
     }
 
     function deleteSection($conn, $section){
         $sql = "DELETE FROM sections WHERE section=?";
+        $stmt = mysqli_stmt_init($conn);
+
+        if(!mysqli_stmt_prepare($stmt, $sql)){
+            header("location: ../register.php?error=internal");
+            exit();
+        }
+
+        mysqli_stmt_bind_param($stmt,"s",$section);
+
+        mysqli_stmt_execute($stmt);
+
+        mysqli_stmt_close($stmt);
+
+        deleteSectionFromEvaluatees($conn, $section);
+    }
+
+    function deleteSectionFromEvaluatees($conn, $section){
+        $sql = "DELETE FROM evaluatees WHERE evaluator=?";
         $stmt = mysqli_stmt_init($conn);
 
         if(!mysqli_stmt_prepare($stmt, $sql)){
@@ -553,6 +638,70 @@
             //pass
         }
         
+    }
+
+    function resetPasswordToDefault($conn, $username, $initials){
+        $sql = "UPDATE users SET password=? WHERE username=?";
+        $stmt = mysqli_stmt_init($conn);
+
+        if(!mysqli_stmt_prepare($stmt, $sql)){
+            header("location: ../master_manageEmployees.php?usernameSearchBox=" . $username . "&error=internal");
+            exit();
+        }
+
+        $newPassword = $username . strtoupper($initials);
+
+        $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+
+        mysqli_stmt_bind_param($stmt, "ss", $hashedPassword, $username);
+        mysqli_stmt_execute($stmt);
+
+        mysqli_stmt_close($stmt);
+
+        header("location: ../master_manageEmployees.php?usernameSearchBox=" . $username . "&error=reset");
+    }
+
+    function getEmployeeInfo($conn, $username){
+        $sql = "SELECT * FROM users WHERE username=?";
+        $stmt = mysqli_stmt_init($conn);
+
+        if(!mysqli_stmt_prepare($stmt, $sql)){
+            header("location: ../resetPassword.php?error=internal");
+            exit();
+        }
+
+        mysqli_stmt_bind_param($stmt, "s", $username);
+        mysqli_stmt_execute($stmt);
+
+        $resultData = mysqli_stmt_get_result($stmt);
+
+        return mysqli_fetch_assoc($resultData);
+        
+    }
+
+    function getEvaluatorsAsArray($conn, $username){
+        $sql = "SELECT * FROM evaluatees WHERE evaluatee_username=?";
+        $stmt = mysqli_stmt_init($conn);
+
+        if(!mysqli_stmt_prepare($stmt, $sql)){
+            
+            exit();
+        }
+
+        mysqli_stmt_bind_param($stmt, "s", $username);
+        mysqli_stmt_execute($stmt);
+
+        $resultData = mysqli_stmt_get_result($stmt);
+
+        $evaluators = array();
+
+        while($row = mysqli_fetch_assoc($resultData)){
+            if($row["evaluator"]){
+                array_push($evaluators, $row["evaluator"]);
+            }
+        }
+
+        return $evaluators;
     }
 
 

@@ -24,7 +24,7 @@
                             include_once "includes/dbh.inc.php";
                             include_once "includes/functions.inc.php";
 
-                            getSectionsForChecklist($conn);
+                            getSectionsForChecklist($conn, array(""));
                         ?>
                     </div>
                     <button onclick="isChecked()" class="btn btn-danger" id="deleteAccountBtn" name="deleteSelectedBtn">Delete Selected</button>

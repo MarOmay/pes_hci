@@ -154,8 +154,9 @@ body {
     cursor: pointer;
     outline: none;
 
-    width: 220px;
-    margin-left: 160px;
+    width: 200px;
+    margin: 25px;
+    margin-bottom: 20px;
 
     margin-top: 20px;
 }
@@ -173,4 +174,38 @@ body {
 
 #sectionInputText {
     margin-bottom: 10px;
+}
+
+#master-reset-emp {
+    margin-left: 15%;
+    margin-right: 15%;
+}
+
+#searchResultBox {
+    border-radius: 15px;
+    height: 220px;
+    padding: 5px;
+    overflow-y: auto;
+    border: none;
+    border-radius: 0%;
+}
+
+#searchResultRow .row {
+    margin-bottom: 10px;
+    border-radius: 15px;
+    box-shadow: 0 2px 2px -2px gray;
+}
+
+#searchResultRow a {
+    text-decoration: none;
+}
+
+#manage-emp-pane {
+    background-color: white;
+    height: 400px;
+    padding: 2%;
+    margin-top: 0px;
+
+    display: flex;
+    justify-content: center;
 }

@@ -10,7 +10,15 @@
         $lname = $_POST['lname'];
         $role = $_POST['role'];
 
-        registerUser($conn, $username, $fname, $lname, "", "", $role);
+        $sections = isset($_POST["sections"]) ? $_POST["sections"] : array();
+
+        if(isset($_POST["editMode"])){
+            updateUserInfo($conn, $username, $fname, $lname, $sections, $role);
+        }
+        else{
+            registerUser($conn, $username, $fname, $lname, "", "", $role);
+        }
+        
 
     }
     else{

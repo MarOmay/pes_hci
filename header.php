@@ -50,8 +50,8 @@
 </div>
 
 <div class="container-fluid bg-white collapse row" id="collapse-ribbon">
-    <div class="col-sm-9"></div>
-    <ul class="nav col-sm-3">
+    <div class="col-sm-8"></div>
+    <ul class="nav col-sm-4" align="right">
         <li class="nav-item">
             <a class="nav-link active" href="index.php">Home</a>
         </li>

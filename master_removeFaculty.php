@@ -35,8 +35,11 @@
                 <div class="col-sm-4">
                     <div align="right">
                         <p class="h6">&nbsp</p>
-                        <button type="button" class="btn btn-success" onclick="window.location.href='registerFaculty.php'">New Employee</button>
+                        <button type="button" class="btn btn-success" onclick="window.location.href='master_registerEmployee.php'">New Employee</button>
                         <br><br><br><br>
+                        <button type="button" class="btn text-success" onclick="window.location.href='master_resetEmployeePassword.php'">Edit Employee 🡕</button>
+                        <br>
+                        <button type="button" class="btn text-success" onclick="window.location.href='master_resetEmployeePassword.php'">Reset Password 🡕</button>
                         
                     </div>
                 </div>

@@ -17,6 +17,10 @@
         resetPassword($conn, $username, $currentPassword, $newPassword);
 
     }
+    else if(isset($_GET["username"]) && isset($_GET["initials"])){
+        checkAuthorization(array("Master"));
+        resetPasswordToDefault($conn, $_GET["username"], $_GET["initials"]);
+    }
     else{
         header("location:  ../index.php");
     }

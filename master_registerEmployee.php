@@ -18,17 +18,31 @@
             <br>
             <div class="row">
                 <div class="col-sm-5">
+
+                    <?php
+
+                        $editMode = false;
+
+                        if(isset($_GET["username"])){
+                            $employee = getEmployeeInfo($conn, $_GET["username"]);
+                            $editMode = true;
+
+                            echo '<input type="hidden" name="editMode" value="true">';
+                        }
+                        
+                    ?>
+
                     <div class="form-group">
                         <label for="username">Employee ID</label>
-                        <input type="text" class="form-control" id="username" name="username" required>
+                        <input type="text" class="form-control" id="username" name="username" value = "<?php echo ($editMode)?$employee["username"]:'';?>" <?php echo (isset($employee["username"]))?'readonly':'';?> required>
                     </div>
                     <div class="form-group">
                         <label for="fname">First name</label>
-                        <input type="text" class="form-control" id="fname" name="fname" required>
+                        <input type="text" class="form-control" id="fname" name="fname" value = "<?php echo ($editMode)?$employee["fname"]:'';?>" required>
                     </div>
                     <div class="form-group">
                         <label for="lname">Last name</label>
-                        <input type="text" class="form-control" id="lname" name="lname" required>
+                        <input type="text" class="form-control" id="lname" name="lname" value = "<?php echo ($editMode)?$employee["lname"]:'';?>" required>
                     </div>
 
                     <?php 
@@ -43,6 +57,7 @@
                                 echo '<label class="error_message" style="color:green;">Account successfully created!</label>';
                             }
                         }
+
                     ?>
                 </div>
 
@@ -52,20 +67,25 @@
                 <div class="col-sm-5">
                     <div class="form-group">
                         <label for="role">Role</label>
-                        <select class="form-control" id="role" name="role" required>
+                        <select class="form-control" id="role" name="role" value = "<?php echo ($editMode)?$employee["role"]:'';?>" required>
                             <?php
                                 include_once "includes/dbh.inc.php";
                                 include_once "includes/functions.inc.php";
-                                getRoles($conn,array("Student","Master"));
+                                getRoles($conn,array("Student","Master"), $editMode?$employee["role"]:"");
                             ?>
                         </select>
                     </div>
 
                     <div class="form-group">
-                        <label for="sections-listbox">Evaluatee</label>
+                        <label for="sections-listbox">Evaluator</label>
                         <div class="container-fluid" id="sections-listbox">
                             <?php 
-                                getSectionsForChecklist($conn);
+                                if($editMode){
+                                    getSectionsForChecklist($conn, getEvaluatorsAsArray($conn, $_GET["username"]));
+                                }
+                                else{
+                                    getSectionsForChecklist($conn, array(""));
+                                }
                             ?>
                         </div>
                     </div>
@@ -78,7 +98,16 @@
             <div class="row">
                 <div class="col-sm-12" align="right">
                     
-                    <button type="submit" class="btn btn-primary" id="registerBtn" name="registerBtn">Register Employee</button>
+                    <?php
+                        if($editMode){
+                            echo '<button type="submit" class="btn btn-primary" id="registerBtn" name="registerBtn">Save</button>';
+                        }
+                        else{
+                            echo '<button type="submit" class="btn btn-primary" id="registerBtn" name="registerBtn">Register Employe</button>';
+                        }
+                        
+                    ?>
+
                 </div>
             </div>
 
