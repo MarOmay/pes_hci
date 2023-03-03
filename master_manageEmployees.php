@@ -114,7 +114,7 @@
                 }
 
                 echo "<br>
-                        <form action='functions/deleteEmployee.php' method='POST'>
+                        <form action='functions/deleteEmployee.php' id='selection-form' method='POST'>
                         <div class='container-fluid'>
                             <div class='row'>
                                 <div class='col-sm-1' align='left'>
@@ -147,7 +147,7 @@
                 echo '     
                         </div>
                         <div align="right">
-                            <button onclick="isChecked()" class="btn text-danger" id="deleteAccountBtn" name="deleteSelectedBtn">Delete Selected</button>
+                            <input type="button" class="btn text-danger" id="deleteAccountBtn" name="deleteSelectedBtn" value="Delete Selected" onclick="isChecked()">
                         </div>
                         </form>';
 
@@ -198,12 +198,14 @@
         const checkboxes = Array.from(document.querySelectorAll(".form-check-input"));
         if (checkboxes.reduce((acc, curr) => acc || curr.checked, false)){
 
-            var confirmation = prompt("Type \"DELETE\" to confim deletion of selected accounts.","");
-
-            if(confirmation == "DELETE"){
-                document.getElementById("register-form").submit();
+            if (confirm("Delete selected accounts?")) {
+                document.getElementById("selection-form").submit();
             }
-
+        
+        }
+        else{
+            alert("Please select at least one Account to delete.");
+            exit();
         }
     }
 

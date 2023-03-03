@@ -27,7 +27,7 @@
                             getSectionsForChecklist($conn, array(""));
                         ?>
                     </div>
-                    <button onclick="isChecked()" class="btn btn-danger" id="deleteAccountBtn" name="deleteSelectedBtn">Delete Selected</button>
+                    <input type="button" onclick="isChecked()" class="btn btn-danger" id="deleteAccountBtn" name="deleteSelectedBtn" value="Delete Selected">
                 </form>
             </div>
 
@@ -63,9 +63,7 @@
         const checkboxes = Array.from(document.querySelectorAll(".form-check-input"));
         if (checkboxes.reduce((acc, curr) => acc || curr.checked, false)){
 
-            var confirmation = prompt("Type \"DELETE\" to confim deletion of selected sections.","");
-
-            if(confirmation == "DELETE"){
+            if(confirm("Delete selected Class Sections?")){
                 document.getElementById("register-form").submit();
             }
 

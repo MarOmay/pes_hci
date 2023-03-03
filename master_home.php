@@ -14,7 +14,7 @@
     <div id="register-pane">
 
         <div class="container-fluid" id="master-home-panel" align="center">
-            <button class="custom_btn" onclick="window.location.href='master_registerEmployee.php'">Add / Remove <br> Employees</button>
+            <button class="custom_btn" onclick="window.location.href='master_registerEmployee.php'">New Employee <br> Account</button>
             <button class="custom_btn">Manage <br> Factors</button>
             <br>
             <button class="custom_btn" onclick="window.location.href='master_manageEmployees.php'">Manage <br> Employees</button>
