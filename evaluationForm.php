@@ -37,14 +37,14 @@
 
             <div class="row">
                 <h6><b>PROMOTIONAL / POSITIVE POINTS</b></h6>
-                <textarea rows="4" maxlength="200" class="comment_field form-group" name="c1" placeholder="Type your comment in English or Tagalog" required></textarea>
+                <textarea rows="4" maxlength="200" class="comment_field form-group" name="positive_comment" placeholder="Type your comment in English or Tagalog" required></textarea>
             </div>
 
             <br>
 
             <div class="row">
                 <h6><b>IMPROVEMENT NEEDS / CORRECTIVE POINTS</b></h6>
-                <textarea rows="4" maxlength="200" class="comment_field form-group" name="c2" placeholder="Type your comment in English or Tagalog" required></textarea>
+                <textarea rows="4" maxlength="200" class="comment_field form-group" name="negative_comment" placeholder="Type your comment in English or Tagalog" required></textarea>
             </div>
 
             <br>

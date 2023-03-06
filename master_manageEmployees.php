@@ -61,10 +61,7 @@
                             $initials = $row["fname"][0] . $row["lname"][0];
                             echo "<div class='container-fluid' id='searchResultRow'>
                                     <div class='row'>
-                                        <div class='col-sm-1' align='left'>
-                                            <input type='checkbox' class='form-check-input' name=\"employees[]\" value='$username' />
-                                        </div>
-                                        <div class='col-sm-4' align='left'>
+                                        <div class='col-sm-3' align='left'>
                                             $name
                                         </div>
                                         <div class='col-sm-3' align='left'>
@@ -74,7 +71,10 @@
                                             <a href='master_registerEmployee.php?username=" . $username . "'><img src='images/edit.png' width='20' height='20'></a>
                                         </div>
                                         <div class='col-sm-2' align='right'>
-                                            <a href='functions/resetPassword.php?username=" . $username . "&initials=" . $initials . "&'><img src='images/reset.png' width='20' height='20'></a>
+                                            <a href='#' onclick='resetConf(\"" . $username . "&initials=" . $initials . "&\")'><img src='images/reset.png' width='20' height='20'></a>
+                                        </div>
+                                        <div class='col-sm-2' align='right'>
+                                            <a href='#' onclick='deleteConf(" . $username . ")'><img src='images/delete.png' width='20' height='20'></a>
                                         </div>
                                     </div>
                                     
@@ -117,10 +117,7 @@
                         <form action='functions/deleteEmployee.php' id='selection-form' method='POST'>
                         <div class='container-fluid'>
                             <div class='row'>
-                                <div class='col-sm-1' align='left'>
-                                    <p class=''>&nbsp</p>
-                                </div>
-                                <div class='col-sm-4' align='left'>
+                                <div class='col-sm-3' align='left'>
                                     <p class=''>Employee</p>
                                 </div>
                                 <div class='col-sm-3' align='left'>
@@ -128,6 +125,9 @@
                                 </div>
                                 <div class='col-sm-2' align='center'>
                                     <p class=''>Edit</p>
+                                </div>
+                                <div class='col-sm-2' align='center'>
+                                    <p class=''>Reset</p>
                                 </div>
                                 <div class='col-sm-2' align='center'>
                                     <p class=''>Reset</p>
@@ -145,9 +145,6 @@
                     getSearchResult($conn, false);
                 }
                 echo '     
-                        </div>
-                        <div align="right">
-                            <input type="button" class="btn text-danger" id="deleteAccountBtn" name="deleteSelectedBtn" value="Delete Selected" onclick="isChecked()">
                         </div>
                         </form>';
 
@@ -170,6 +167,11 @@
                     else if($_GET["error"] === "noselect"){
                         echo '  <div class="alert alert-danger" id="alertBox">
                                     <strong>Cancelled! </strong>Please select an account.
+                                </div>';
+                    }
+                    else if($_GET["error"] === "internal"){
+                        echo '  <div class="alert alert-danger" id="alertBox">
+                                    <strong>Error! </strong>Server error. Try again.
                                 </div>';
                     }
                 }
@@ -206,6 +208,18 @@
         else{
             alert("Please select at least one Account to delete.");
             exit();
+        }
+    }
+
+    function resetConf(GETParams){
+        if (confirm("Reset password of this account to default?")) {
+                window.location.href= "functions/resetPassword.php?username=" + GETParams;
+            }
+    }
+
+    function deleteConf(username){
+        if (confirm("Delete selected account?")) {
+            window.location.href= "functions/deleteEmployee.php?username=" + username;
         }
     }
 

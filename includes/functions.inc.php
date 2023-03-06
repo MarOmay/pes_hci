@@ -1,5 +1,7 @@
 <?php
 
+use function PHPSTORM_META\type;
+
     include_once "dbh.inc.php";
 
     function checkLoginStatus(){
@@ -200,7 +202,7 @@
             mysqli_stmt_close($stmt);
         }
 
-        header("location: ../master_manageEmployees.php?usernameSearchBox=" . $username . "&error=saved");
+        header("location: ../master_manageEmployees.php?usernameSearchBox=&error=saved");
 
     }
 
@@ -435,11 +437,11 @@
                 <div class="col-sm-2">
 
                     <div class="form-group">
-                        <select class="form-control" id="rating" name="rating_' . $row["id"] . '" required>';
+                        <select class="form-control" id="rating" name="f' . $row["id"] . '" required>';
 
             echo "<option value=''>--</option>";
 
-            for($i = $row["max_rate"]; $i>0; $i--){
+            for($i = $row["peer_rate"]; $i>0; $i--){
                 echo "<option value='" . $i . "'>" . $i . "</option>";
             }
 
@@ -505,23 +507,36 @@
     }
 
     function postEval($conn, $evaluator_username, $evaluatee_username, $responses){
-        $sql = "INSERT INTO evaluations (id, evaluator, evaluatee, f1, f2, f3, f4, f5, f6, f7, f8, f9, c1, c2)
-                VALUES (NULL,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-        $stmt = mysqli_stmt_init($conn);
-
-        if(!mysqli_stmt_prepare($stmt, $sql)){
-            header("location: ../index.php?error=internal");
-            exit();
+        $sql = "INSERT INTO `evaluations` (`id`, `evaluator`, `evaluatee`, `positive_comment`, `negative_comment`,";
+        
+        //append field names
+        foreach($responses as $key => $value){
+            if($key !== "positive_comment" && $key !== "negative_comment"){
+                $sql = $sql . "`f" . $key . "`,";
+            }
         }
 
-        mysqli_stmt_bind_param($stmt,"ssiiiiiiiiiss",$evaluator_username, $evaluatee_username,
-                                $responses["1"],$responses["2"],$responses["3"],
-                                $responses["4"],$responses["5"],$responses["6"],$responses["7"],
-                                $responses["8"],$responses["9"],$responses["c1"],$responses["c2"]);
+        $sql = substr($sql,0,-1) . ")";
 
-        mysqli_stmt_execute($stmt);
+        $sql = $sql . " VALUES (NULL,'" . $evaluator_username . "', '" . $evaluatee_username . "','" . $responses["positive_comment"] . "','" . $responses["negative_comment"] . "',";
 
-        header("location: ../unauthorized.php?username=" . $evaluatee_username);
+        //append values
+        foreach($responses as $key => $value){
+            if($key !== "positive_comment" && $key !== "negative_comment"){
+                $sql = $sql . "'" . $value . "',";
+            }
+        }
+
+        $sql = substr($sql,0,-1) . ")";
+
+        $query = mysqli_query($conn, $sql);
+
+        if($query){
+            header("location: ../unauthorized.php?username=" . $evaluatee_username);
+        }
+        else{
+            echo "may error";
+        }
 
     }
 
@@ -645,7 +660,7 @@
         $stmt = mysqli_stmt_init($conn);
 
         if(!mysqli_stmt_prepare($stmt, $sql)){
-            header("location: ../master_manageEmployees.php?usernameSearchBox=" . $username . "&error=internal");
+            header("location: ../master_manageEmployees.php?usernameSearchBox=&error=internal");
             exit();
         }
 
@@ -658,7 +673,7 @@
 
         mysqli_stmt_close($stmt);
 
-        header("location: ../master_manageEmployees.php?usernameSearchBox=" . $username . "&error=reset");
+        header("location: ../master_manageEmployees.php?usernameSearchBox=&error=reset");
     }
 
     function getEmployeeInfo($conn, $username){
@@ -702,6 +717,83 @@
         }
 
         return $evaluators;
+    }
+
+
+    // add factor , adding factor
+
+    function addFactor($conn, $factorTitle, $factorDesc, $peerRating, $studentRating){
+
+        // add to factors table
+        $sql = "INSERT INTO factors (id, factor, description, peer_rate, student_rate)
+        VALUES (NULL, ?, ?, ?, ?)";
+        $stmt = mysqli_stmt_init($conn);
+
+        if(!mysqli_stmt_prepare($stmt, $sql)){
+            exit();
+        }
+
+        mysqli_stmt_bind_param($stmt,"ssii", $factorTitle, $factorDesc, $peerRating, $studentRating);
+
+        mysqli_stmt_execute($stmt);
+
+        //add to evaluations table
+        $lastInsertID = "f" . mysqli_insert_id($conn);
+
+        $sql = "ALTER TABLE evaluations ADD " . $lastInsertID . " INT NOT NULL";
+
+        $stmt = mysqli_stmt_init($conn);
+        
+        if(!mysqli_stmt_prepare($stmt, $sql)){
+            exit();
+        }
+
+        //mysqli_stmt_bind_param($stmt,"s", $lastInsertID);
+
+        mysqli_stmt_execute($stmt);
+
+        header("location: ../master_manageFactors.php");
+
+    }
+
+    function deleteFactor($conn, $id){
+
+        //delete from factors
+        $sql = "DELETE FROM factors WHERE id=?";
+        $stmt = mysqli_stmt_init($conn);
+
+        if(!mysqli_stmt_prepare($stmt, $sql)){
+            exit();
+        }
+
+        mysqli_stmt_bind_param($stmt, "i", $id);
+
+        mysqli_stmt_execute($stmt);
+
+        //drop column
+        $sql = "ALTER TABLE evaluations DROP COLUMN f" . $id;
+        $stmt = mysqli_stmt_init($conn);
+
+        if(!mysqli_stmt_prepare($stmt, $sql)){
+            exit();
+        }
+
+        mysqli_stmt_execute($stmt);
+    }
+
+    function updateFactor($conn, $id, $factor, $description, $peer_rate, $student_rate){
+        $sql = "UPDATE factors
+                SET factor=?, description=?, peer_rate=?, student_rate=?
+                WHERE id=?";
+        $stmt = mysqli_stmt_init($conn);
+
+        if(!mysqli_stmt_prepare($stmt, $sql)){
+            exit();
+        }
+
+        mysqli_stmt_bind_param($stmt, "ssiii", $factor, $description, $peer_rate, $student_rate, $id);
+        mysqli_stmt_execute($stmt);
+
     }
 
 

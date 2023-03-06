@@ -183,7 +183,7 @@ body {
 
 #searchResultBox {
     border-radius: 15px;
-    height: 220px;
+    height: 250px;
     padding: 5px;
     overflow-y: auto;
     border: none;
@@ -208,4 +208,24 @@ body {
 
     display: flex;
     justify-content: center;
+}
+
+#factorBox {
+    border-radius: 15px;
+    height: 350px;
+    padding: 5px;
+    overflow-y: auto;
+    border: none;
+    border-radius: 0%;
+}
+
+#factorRow{
+    margin-bottom: 20px;
+    border-radius: 15px;
+    box-shadow: 0 2px 2px -1px gray;
+}
+
+#factor-textarea {
+    height: 150px;
+    overflow-y: auto;
 }

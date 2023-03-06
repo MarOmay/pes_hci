@@ -19,6 +19,10 @@
             header("location: ../master_manageEmployees.php?error=noselect");
         }
     }
+    else if (isset($_GET["username"])){
+        deleteEmployee($conn, $_GET["username"]);
+        header("location: ../master_manageEmployees.php?error=deleted");
+    }
     else{
         header("location: ../master_manageEmployees.php");
     }

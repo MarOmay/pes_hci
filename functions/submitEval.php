@@ -25,11 +25,11 @@
 
         while($row = mysqli_fetch_assoc($resultData)){
             $id = $row["id"];
-            $responses[$id] = $_POST["rating_".$id];
+            $responses[$id] = $_POST["f".$id];
         }
 
-        $responses["c1"] = $_POST["c1"];
-        $responses["c2"] = $_POST["c2"];
+        $responses["positive_comment"] = $_POST["positive_comment"];
+        $responses["negative_comment"] = $_POST["negative_comment"];
 
         if(isEvaluated($conn, $evaluator_username, $evaluatee_username)){
             header("location: ../unauthorized.php?username=" . $_POST["facultyName"]);
