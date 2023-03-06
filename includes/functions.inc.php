@@ -302,6 +302,25 @@ use function PHPSTORM_META\type;
         mysqli_stmt_close($stmt);
     }
 
+    function getRoleByUsername($conn, $username){
+        $sql = "SELECT role FROM users WHERE username=?";
+        $stmt = mysqli_stmt_init($conn);
+
+        if(!mysqli_stmt_prepare($stmt, $sql)){
+            exit();
+        }
+
+        mysqli_stmt_bind_param($stmt, "s", $username);
+
+        mysqli_stmt_execute($stmt);
+
+        $resultData = mysqli_stmt_get_result($stmt);
+
+        $data = mysqli_fetch_assoc($resultData);
+
+        return $data["role"];
+    }
+
     function getUsersToEvaluate($conn, $username, $section, $role){
 
         $sql = "SELECT username, fname, lname, role FROM users WHERE role='Teaching' or role='Non-Teaching'";
@@ -794,6 +813,153 @@ use function PHPSTORM_META\type;
         mysqli_stmt_bind_param($stmt, "ssiii", $factor, $description, $peer_rate, $student_rate, $id);
         mysqli_stmt_execute($stmt);
 
+    }
+
+    // reports genearation, generate report
+
+    function getAllEmployeesUsername($conn){
+        $sql = "SELECT username FROM users WHERE role='Teaching' OR role='Non-Teaching'";
+        $stmt = mysqli_stmt_init($conn);
+
+        if(!mysqli_stmt_prepare($stmt, $sql)){
+            exit();
+        }
+
+        mysqli_stmt_execute($stmt);
+
+        return mysqli_stmt_get_result($stmt);
+    }
+
+    function getEvaluationsByUsername($conn, $username){
+        $sql = "SELECT * FROM evaluations WHERE evaluatee=?";
+        $stmt = mysqli_stmt_init($conn);
+
+        if(!mysqli_stmt_prepare($stmt, $sql)){
+            exit();
+        }
+
+        mysqli_stmt_bind_param($stmt, "s", $username);
+
+        mysqli_stmt_execute($stmt);
+
+        return mysqli_stmt_get_result($stmt);
+    }
+
+    function getNameByUsername($conn, $username){
+        $sql = "SELECT username, fname, lname FROM users WHERE username=?";
+        $stmt = mysqli_stmt_init($conn);
+
+        if(!mysqli_stmt_prepare($stmt, $sql)){
+            header("location: ../index.php?error=internal");
+            exit();
+        }
+
+        mysqli_stmt_bind_param($stmt,"s",$username);
+
+        mysqli_stmt_execute($stmt);
+
+        $resultData = mysqli_stmt_get_result($stmt);
+
+        while ($row = mysqli_fetch_assoc($resultData)){
+            if($row["username"] == $username){
+                $fname = $row["fname"];
+                $lname = $row["lname"];
+
+                return $fname . " " . $lname;
+            }
+        }
+
+        mysqli_stmt_close($stmt);
+    }
+
+    function displayReport_summaryAll($conn){
+
+        //error_reporting(0);
+
+        $allEmployeeUsernames = getAllEmployeesUsername($conn);
+
+        while($usernames = mysqli_fetch_assoc($allEmployeeUsernames)){
+            
+            $evaluations = getEvaluationsByUsername($conn, $usernames["username"]);
+
+            $username = $usernames["username"];
+
+            $fields = [];
+            $ave = 0;
+            $ctr = 0;
+            while($eval = mysqli_fetch_assoc($evaluations)){
+
+                $columns = getColumns($conn);
+
+                $total = 0;
+
+                try{
+                    while($column = mysqli_fetch_assoc($columns)){
+                        $col = "" . $column['Field'];
+                        
+                        if($col !== "id" && $col !== "evaluator" && $col !== "evaluatee" && $col !== "positive_comment" && $col !== "negative_comment"){
+                            
+                            if(isset($fields[$col])){
+                                $fields[$col] = $fields[$col] + $eval[$col];
+                            }
+                            else{
+                                $fields[$col] = $eval[$col];
+                            }
+
+                            $total = $total + $eval[$col];
+                        }
+                    }
+                }
+                catch(Exception $e){
+                    //pass
+                }
+
+                $ave = $ave + $total;
+
+                $ctr++;
+            }
+
+            $ave =  $ave > 0 ? $ave / $ctr : 0;
+
+            if($ave === 0){
+                break;
+            }
+
+            echo '
+                <div class="row emp-row" align="center">
+                    <div class="col-sm-4" align="center">
+                        <p class="h6">' . $username . '</p>
+                    </div>
+
+                    <div class="col-sm-4" align="center">
+                        <p class="h6">' . getNameByUsername($conn, $username) . '</p>
+                    </div>
+
+                    <div class="col-sm-2" align="center">
+                        <p class="h6">' . number_format($ave,2) . '</p>
+                    </div>
+
+                    <div class="col-sm-2" align="center">
+                        <a href="#">View</a>
+                    </div>
+                </div>
+            ';
+        }
+
+    }
+
+    function getColumns($conn){
+        $sql = "SHOW COLUMNS FROM evaluations";
+
+        $stmt = mysqli_stmt_init($conn);
+
+        if(!mysqli_stmt_prepare($stmt, $sql)){
+            exit();
+        }
+
+        mysqli_stmt_execute($stmt);
+
+        return mysqli_stmt_get_result($stmt);;
     }
 
 
