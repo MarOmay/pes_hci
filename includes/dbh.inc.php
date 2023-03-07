@@ -11,4 +11,8 @@
         die("Connection failed: " .mysqli_connect_error());
     }
 
+    function createTables(){
+        //https://www.mysqltutorial.org/mysql-create-table/#:~:text=The%20IF%20NOT%20EXISTS%20is,columns%20are%20separated%20by%20commas.
+    }
+
 ?>

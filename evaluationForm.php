@@ -1,7 +1,7 @@
 <?php 
     include_once "header.php";
     include_once "includes/functions.inc.php";
-    //checkAuthorization(array("Student","Teaching","Non-Teaching"));
+    checkAuthorization(array("Student","Teaching","Non-Teaching"));
 ?>
 
 <div class="container-fluid border" id="login-container">
@@ -18,7 +18,14 @@
                 include_once "includes/functions.inc.php";
 
                 if(isset($_GET["id"])){
+                    echo '<div class="row">';
+                    echo '<div class="col-sm-8">';
                     getEvaluateeName($conn, $_GET["id"]);
+                    echo '</div>';
+                    echo '<div class="col-sm-4" align="right">';
+                    echo '<input type="checkbox" class="form-check-input" name="fullscreen" id="fullscreen" onclick="setFullscreen(this.checked)">&nbspFullscreen';
+                    echo '</div>';
+                    echo '</div>';
                 }
                 else{
                     header("location: index.php?error=internal");
@@ -68,3 +75,14 @@
     </div>
     
 </div>
+
+<script type="text/javascript">
+    function setFullscreen(checked){
+        if(checked){
+            document.getElementById("register-pane").style.height = "auto";
+        }
+        else{
+            document.getElementById("register-pane").style.height = "350px";
+        }
+    }
+</script>
