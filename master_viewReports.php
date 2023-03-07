@@ -71,25 +71,30 @@
 
             </form>
 
-            <div class="row" id="reportsLabel">
-                <div class="col-sm-4" align="left">
-                    <p class="h6">Username</p>
-                </div>
+            <!--
+            <div class="row conatiner-fluid">
+                <div class="row emp-row" id="reportsLabel">
+                    <div class="col-sm-4" align="left">
+                        <p class="h6">Username</p>
+                    </div>
 
-                <div class="col-sm-4" align="left">
-                    <p class="h6">Name</p>
-                </div>
+                    <div class="col-sm-4" align="left">
+                        <p class="h6">Name</p>
+                    </div>
 
-                <div class="col-sm-2" align="left">
-                    <p class="h6">Rating</p>
-                </div>
+                    <div class="col-sm-2" align="left">
+                        <p class="h6">Rating</p>
+                    </div>
 
-                <div class="col-sm-2" align="left">
-                    <p class="h6">Details</p>
+                    <div class="col-sm-2" align="left">
+                        <p class="h6">Details</p>
+                    </div>
                 </div>
             </div>
+                    -->
 
-            <div class="row container-fluid" id="reportsBox">
+            <div class="row container-fluid reportsBox">
+                <table class="table table-striped table-bordered">
 
                 <?php
                     include_once "includes/dbh.inc.php";
@@ -98,7 +103,19 @@
                     if(isset($type)){
 
                         if($type === "summaryAll"){
-                            displayReport_summaryAll($conn);
+                            //display table headers
+                            echo '  <thead class="thead-dark">
+                                        <tr>
+                                            <th>Username</th>
+                                            <th>Name</th>
+                                            <th>Final Rating</th>
+                                        </tr>
+                                    </thead>';
+                            
+                            echo '  <tbody>'
+                                    .displayReport_summaryAll($conn).
+                                    '</tbody>';
+
                         }
                         else if($type === "summaryDetailed"){
                             
@@ -120,7 +137,14 @@
                     }
 
                 ?>
+
+                </table>
+
             </div>
+
+                <div class="container-fluid" id="exportBtn">
+                    <input type="button" class="btn bg-success text-white" onclick="exportData('<?php echo $type; ?>')" value="Export">
+                </div>
 
         </div>
 
@@ -136,6 +160,10 @@
 
     function setType(type){
         window.location.href="master_viewReports.php?type=" + type;
+    }
+
+    function exportData(type){
+        window.location.href="functions/exportData.php?type=" + type;
     }
 
 </script>

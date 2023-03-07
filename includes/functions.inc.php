@@ -926,23 +926,11 @@ use function PHPSTORM_META\type;
             }
 
             echo '
-                <div class="row emp-row" align="center">
-                    <div class="col-sm-4" align="center">
-                        <p class="h6">' . $username . '</p>
-                    </div>
-
-                    <div class="col-sm-4" align="center">
-                        <p class="h6">' . getNameByUsername($conn, $username) . '</p>
-                    </div>
-
-                    <div class="col-sm-2" align="center">
-                        <p class="h6">' . number_format($ave,2) . '</p>
-                    </div>
-
-                    <div class="col-sm-2" align="center">
-                        <a href="#">View</a>
-                    </div>
-                </div>
+                <tr>
+                    <td>' . $username . '</td>
+                    <td>' . getNameByUsername($conn, $username) . '</td>
+                    <td>' . number_format($ave, 2) . '</td>
+                </tr>
             ';
         }
 
@@ -961,6 +949,5 @@ use function PHPSTORM_META\type;
 
         return mysqli_stmt_get_result($stmt);;
     }
-
 
 ?>
