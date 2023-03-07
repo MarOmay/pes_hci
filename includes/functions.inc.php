@@ -1144,4 +1144,47 @@ use function PHPSTORM_META\type;
         return 0;
     }
 
+    // delete database, reset database
+
+    function verify_credential($conn, $username, $password){
+        $sql = "SELECT * FROM users WHERE username = ?";
+        $stmt = mysqli_stmt_init($conn);
+
+        if(!mysqli_stmt_prepare($stmt, $sql)){
+            header("location: ../master_resetDatabase.php?error=internal");
+            exit();
+        }
+
+        mysqli_stmt_bind_param($stmt, "s", $username);
+        mysqli_stmt_execute($stmt);
+
+        $resultData = mysqli_stmt_get_result($stmt);
+
+        $row = mysqli_fetch_assoc($resultData);
+
+        if($row === false){
+            header("location: ../master_resetDatabase.php?error=internal");
+            exit();
+        }
+
+        if(empty($row["username"])){
+            checkLoginStatus();
+        }
+        else{
+            $isMatch = password_verify($password, $row["password"]);
+
+            if($isMatch){
+                /*
+                    some actions here
+                */
+                header("location: ../master_home.php?error=dbreset");
+            }
+            else{
+                header("location: ../master_resetDatabase.php?error=ipw");
+            }
+        }
+
+        mysqli_stmt_close($stmt);
+    }
+
 ?>

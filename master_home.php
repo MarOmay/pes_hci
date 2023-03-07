@@ -22,7 +22,18 @@
 
             <br>    
             <button class="custom_btn" onclick="window.location.href='master_manageSections.php'">Manage <br> Sections</button>
-            <button class="custom_btn">Reset <br> Database</button>
+            <button class="custom_btn" onclick="window.location.href='master_resetDatabase.php'">Reset <br> Database</button>
+
+            <?php
+                if(isset($_GET["error"])){
+                    if($_GET["error"] === "dbreset"){
+                        echo '  <br><div class="alert alert-success" id="alertBox">
+                                    <strong>Success! </strong>Database reset successfully.
+                                </div>';
+                    }
+                }
+            ?>
+
         </div>
 
     </div>
@@ -32,3 +43,14 @@
     </div>
     
 </div>
+
+<script type="text/javascript">
+
+    setTimeout(() => {
+            const alerts = document.getElementById("alertBox");
+
+            alerts.style.display = "none";
+
+        }, 3000);
+
+</script>
