@@ -262,3 +262,7 @@ body {
     margin-top: 15px;
     float: right;
 }
+
+#comments-emp-name {
+    vertical-align: text-bottom;
+}

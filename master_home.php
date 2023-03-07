@@ -18,7 +18,7 @@
             <button class="custom_btn" onclick="window.location.href='master_manageFactors.php'">Manage <br> Factors</button>
             <br>
             <button class="custom_btn" onclick="window.location.href='master_manageEmployees.php'">Manage <br> Employees</button>
-            <button class="custom_btn" onclick="window.location.href='master_viewReports.php?type=summaryAll'">Generate <br> Reports</button>
+            <button class="custom_btn" onclick="window.location.href='master_viewReports.php?type=summaryAll_Peer'">Generate <br> Reports</button>
 
             <br>    
             <button class="custom_btn" onclick="window.location.href='master_manageSections.php'">Manage <br> Sections</button>

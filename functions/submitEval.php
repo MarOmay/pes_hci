@@ -28,8 +28,8 @@
             $responses[$id] = $_POST["f".$id];
         }
 
-        $responses["positive_comment"] = $_POST["positive_comment"];
-        $responses["negative_comment"] = $_POST["negative_comment"];
+        $responses["positive_comment"] = cleanString($_POST["positive_comment"]);
+        $responses["negative_comment"] = cleanString($_POST["negative_comment"]);
 
         if(isEvaluated($conn, $evaluator_username, $evaluatee_username)){
             header("location: ../unauthorized.php?username=" . $_POST["facultyName"]);

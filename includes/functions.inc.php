@@ -4,6 +4,13 @@ use function PHPSTORM_META\type;
 
     include_once "dbh.inc.php";
 
+    function cleanString($string){
+        $string = str_replace("'", "", $string);
+        $string = str_replace("\"", "", $string);
+        $string = str_replace("`", "", $string);
+        return $string;
+    }
+
     function checkLoginStatus(){
         if (isset($_SESSION["id"]) !== true){
             header("location: ../index.php?error=unauth");
@@ -308,6 +315,10 @@ use function PHPSTORM_META\type;
 
         if(!mysqli_stmt_prepare($stmt, $sql)){
             exit();
+        }
+
+        if(gettype($username) !== gettype("teext")){
+            $username = $username . "";
         }
 
         mysqli_stmt_bind_param($stmt, "s", $username);
@@ -818,7 +829,7 @@ use function PHPSTORM_META\type;
     // reports genearation, generate report
 
     function getAllEmployeesUsername($conn){
-        $sql = "SELECT username FROM users WHERE role='Teaching' OR role='Non-Teaching'";
+        $sql = "SELECT username, fname, lname FROM users WHERE role='Teaching' OR role='Non-Teaching'";
         $stmt = mysqli_stmt_init($conn);
 
         if(!mysqli_stmt_prepare($stmt, $sql)){
@@ -872,7 +883,7 @@ use function PHPSTORM_META\type;
         mysqli_stmt_close($stmt);
     }
 
-    function displayReport_summaryAll($conn){
+    function displayReport_summaryAll($conn, $filter){
 
         //error_reporting(0);
 
@@ -888,6 +899,19 @@ use function PHPSTORM_META\type;
             $ave = 0;
             $ctr = 0;
             while($eval = mysqli_fetch_assoc($evaluations)){
+
+                $role = getRoleByUsername($conn, $eval["evaluator"]);
+
+                if($filter === "Student"){
+                    if($role !== "Student"){
+                        continue;
+                    }
+                }
+                else{
+                    if($role !== "Teaching" && $role !== "Non-Teaching"){
+                        continue;
+                    }
+                }
 
                 $columns = getColumns($conn);
 
@@ -929,9 +953,169 @@ use function PHPSTORM_META\type;
                 <tr>
                     <td>' . $username . '</td>
                     <td>' . getNameByUsername($conn, $username) . '</td>
+                    <td>' . $ctr . '</td>
                     <td>' . number_format($ave, 2) . '</td>
                 </tr>
             ';
+        }
+
+    }
+
+    function displayReport_summaryDetailed($conn, $filter){
+
+        //error_reporting(0);
+
+        $allEmployeeUsernames = getAllEmployeesUsername($conn);
+
+        while($usernames = mysqli_fetch_assoc($allEmployeeUsernames)){
+            
+            $evaluations = getEvaluationsByUsername($conn, $usernames["username"]);
+
+            $username = $usernames["username"];
+
+            $fields = [];
+            $ave = 0;
+            $ctr = 0;
+            while($eval = mysqli_fetch_assoc($evaluations)){
+
+                $role = getRoleByUsername($conn, $eval["evaluator"]);
+
+                if($filter === "Student"){
+                    if($role !== "Student"){
+                        continue;
+                    }
+                }
+                else{
+                    if($role !== "Teaching" && $role !== "Non-Teaching"){
+                        continue;
+                    }
+                }
+
+                $columns = getColumns($conn);
+
+                $total = 0;
+
+                try{
+                    while($column = mysqli_fetch_assoc($columns)){
+                        $col = "" . $column['Field'];
+                        
+                        if($col !== "id" && $col !== "evaluator" && $col !== "evaluatee" && $col !== "positive_comment" && $col !== "negative_comment"){
+                            
+                            if(isset($fields[$col])){
+                                $fields[$col] = $fields[$col] + $eval[$col];
+                            }
+                            else{
+                                $fields[$col] = $eval[$col];
+                            }
+
+                            $total = $total + $eval[$col];
+                        }
+                    }
+                }
+                catch(Exception $e){
+                    //pass
+                }
+
+                $ave = $ave + $total;
+
+                $ctr++;
+            }
+
+            $ave =  $ave > 0 ? $ave / $ctr : 0;
+
+            if($ave === 0){
+                break;
+            }
+
+            echo '
+                <tr>
+                    <td>' . $username . '</td>
+                    <td>' . getNameByUsername($conn, $username) . '</td>';
+
+                    foreach($fields as $field => $val){
+                        echo '<td>' . number_format($val / $ctr, 2) . '</td>';
+                    }
+
+            echo '<td>' . number_format($ave, 2) . '</td>
+                </tr>';
+        }
+
+    }
+
+    function displayReport_commentPerUser($conn, $filter, $username){
+
+        //error_reporting(0);
+            
+        $evaluations = getEvaluationsByUsername($conn, $username);
+
+        while($eval = mysqli_fetch_assoc($evaluations)){
+
+            if($eval["evaluatee"] !== $username){
+                continue;
+            }
+
+            $role = getRoleByUsername($conn, $eval["evaluator"]);
+
+            if($filter === "Student"){
+                if($role !== "Student"){
+                    continue;
+                }
+            }
+            else{
+                if($role !== "Teaching" && $role !== "Non-Teaching"){
+                    continue;
+                }
+            }
+
+            echo '
+                <tr>
+                    <td>' . $eval["positive_comment"] . '</td>
+                    <td>' . $eval["negative_comment"] . '</td>
+                </tr>';
+        }
+        
+
+    }
+
+    function displayReport_commentAllUsers($conn, $filter){
+
+        //error_reporting(0);
+
+        $allEmployeeUsernames = getAllEmployeesUsername($conn);
+
+        $ctr = 0;
+
+        while($usernames = mysqli_fetch_assoc($allEmployeeUsernames)){
+            
+            $evaluations = getEvaluationsByUsername($conn, $usernames["username"]);
+
+            while($eval = mysqli_fetch_assoc($evaluations)){
+
+                $role = getRoleByUsername($conn, $eval["evaluator"]);
+
+                if($filter === "Student"){
+                    if($role !== "Student"){
+                        continue;
+                    }
+                }
+                else{
+                    if($role !== "Teaching" && $role !== "Non-Teaching"){
+                        continue;
+                    }
+                }
+
+                echo '
+                    <tr>
+                        <td>' . getNameByUsername($conn, $eval["evaluatee"]) . '</td>
+                        <td>' . $eval["positive_comment"] . '</td>
+                        <td>' . $eval["negative_comment"] . '</td>
+                    </tr>';
+                $ctr++;
+
+                if($ctr >= 25) break;
+            }
+
+            if($ctr >= 25) break;
         }
 
     }
@@ -948,6 +1132,16 @@ use function PHPSTORM_META\type;
         mysqli_stmt_execute($stmt);
 
         return mysqli_stmt_get_result($stmt);;
+    }
+
+    function sortAsc($a, $b){
+        //note: use this function with usort
+        if ($a['lname'] > $b['lname']) {
+            return 1;
+        } elseif ($a['lname'] < $b['lname']) {
+            return -1;
+        }
+        return 0;
     }
 
 ?>
