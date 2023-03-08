@@ -1,5 +1,10 @@
 <?php
-    include_once "header.php";
+    try{
+        include_once "header.php";
+    }
+    catch(Exception $e){
+        echo 'Create a database named \'pas_hci\', then goto evaluations';
+    }
 
     if(isset($_SESSION["id"])){
 
