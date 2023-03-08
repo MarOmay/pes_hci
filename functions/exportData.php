@@ -77,7 +77,7 @@
                 $ave =  $ave > 0 ? $ave / $ctr : 0;
 
                 if($ave === 0){
-                    break;
+                    continue;
                 }
 
                 $lineData = array($username, getNameByUsername($conn, $username), $ctr, number_format($ave, 2));
@@ -167,7 +167,7 @@
                 $ave =  $ave > 0 ? $ave / $ctr : 0;
 
                 if($ave === 0){
-                    break;
+                    continue;
                 }
 
                 $lineData = array($username, getNameByUsername($conn, $username));

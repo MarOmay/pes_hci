@@ -192,7 +192,7 @@ use function PHPSTORM_META\type;
             </div>
 
                 <div class="container-fluid" id="exportBtn">
-                    <input type="button" class="btn bg-success text-white" onclick="exportData('<?php echo $type; ?>')" value="Export">
+                    <input type="button" class="btn bg-success text-white" onclick="exportData('<?php echo $type; ?>','<?php echo isset($username) ? $username : null ?>')" value="Export">
                 </div>
 
         </div>
@@ -218,8 +218,8 @@ use function PHPSTORM_META\type;
         document.getElementById("usernameFilter").submit();
     }
 
-    function exportData(type){
-        window.location.href="functions/exportData.php?type=" + type;
+    function exportData(type, username){
+        window.location.href="functions/exportData.php?type=" + type + "&username=" + username;
     }
 
 </script>

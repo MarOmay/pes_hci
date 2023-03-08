@@ -874,7 +874,7 @@ use function PHPSTORM_META\type;
         $allEmployeeUsernames = getAllEmployeesUsername($conn);
 
         while($usernames = mysqli_fetch_assoc($allEmployeeUsernames)){
-            
+
             $evaluations = getEvaluationsByUsername($conn, $usernames["username"]);
 
             $username = $usernames["username"];
@@ -882,6 +882,7 @@ use function PHPSTORM_META\type;
             $fields = [];
             $ave = 0;
             $ctr = 0;
+
             while($eval = mysqli_fetch_assoc($evaluations)){
 
                 $role = getRoleByUsername($conn, $eval["evaluator"]);
@@ -930,7 +931,7 @@ use function PHPSTORM_META\type;
             $ave =  $ave > 0 ? $ave / $ctr : 0;
 
             if($ave === 0){
-                break;
+                continue;
             }
 
             echo '
@@ -941,6 +942,8 @@ use function PHPSTORM_META\type;
                     <td>' . number_format($ave, 2) . '</td>
                 </tr>
             ';
+
+            
         }
 
     }
@@ -1008,7 +1011,7 @@ use function PHPSTORM_META\type;
             $ave =  $ave > 0 ? $ave / $ctr : 0;
 
             if($ave === 0){
-                break;
+                continue;
             }
 
             echo '
@@ -1158,9 +1161,16 @@ use function PHPSTORM_META\type;
             $isMatch = password_verify($password, $row["password"]);
 
             if($isMatch){
-                /*
-                    some actions here
-                */
+                $sql = "DELETE FROM evaluations";
+                $stmt = mysqli_stmt_init($conn);
+
+                if(!mysqli_stmt_prepare($stmt, $sql)){
+                    header("location: ../master_resetDatabase.php?error=internal");
+                    exit();
+                }
+
+                mysqli_stmt_execute($stmt);
+                
                 header("location: ../master_home.php?error=dbreset");
             }
             else{
