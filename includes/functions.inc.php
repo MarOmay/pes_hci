@@ -372,7 +372,7 @@ use function PHPSTORM_META\type;
 
     }
 
-    function resetPassword($conn, $username, $currentPassword, $newPassword){
+    function resetPassword($conn, $username, $newPassword){
         $sql = "SELECT * FROM users WHERE username = ?";
         $stmt = mysqli_stmt_init($conn);
 
@@ -397,40 +397,24 @@ use function PHPSTORM_META\type;
             header("location: ../resetPassword.php?error=noaccount");
         }
         else{
+            $stmt = mysqli_stmt_init($conn);
 
-            $isMatch = false;
+            $sql = "UPDATE users SET password=? WHERE username=?";
 
-            if(empty($row["password"])){
-                $isMatch = true;
-            }
-            else{
-                $isMatch = password_verify($currentPassword, $row["password"]);
-            }
-
-            if($isMatch === true){
-                $stmt = mysqli_stmt_init($conn);
-
-                $sql = "UPDATE users SET password=? WHERE username=?";
-
-                if(!mysqli_stmt_prepare($stmt, $sql)){
-                    header("location: ../resetPassword.php?error=internal");
-                    exit();
-                }
-
-                $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
-
-                mysqli_stmt_bind_param($stmt, "ss", $hashedPassword, $username);
-                mysqli_stmt_execute($stmt);
-
-                mysqli_stmt_close($stmt);
-
-                header("location: ../resetPassword.php?error=success");
+            if(!mysqli_stmt_prepare($stmt, $sql)){
+                header("location: ../resetPassword.php?error=internal");
                 exit();
             }
-            else{
-                header("location: ../resetPassword.php?error=incorrectpassword");
-                exit();
-            }
+
+            $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+
+            mysqli_stmt_bind_param($stmt, "ss", $hashedPassword, $username);
+            mysqli_stmt_execute($stmt);
+
+            mysqli_stmt_close($stmt);
+
+            header("location: ../resetPassword.php?error=success");
+            exit();
         }
 
         mysqli_stmt_close($stmt);

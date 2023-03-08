@@ -17,17 +17,14 @@
             <h4 class="text-center">Change Password</h4>
 
             <br>
-            <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" class="form-control" id="username" name="username" required>
-            </div>
-            <div class="form-group">
-                <label for="currentPassword">Current Password</label>
-                <input type="password" class="form-control" id="currentPassword" name="currentPassword" required>
-            </div>
+            
             <div class="form-group">
                 <label for="newPassword">New Password</label>
                 <input type="password" class="form-control" id="newPassword" name="newPassword" required>
+            </div>
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password</label>
+                <input type="password" class="form-control" id="currentPassword" name="confirmPassword" required>
             </div>
 
             <?php 
@@ -39,8 +36,8 @@
                     else if ($_GET["error"] === "loginfailed"){
                         echo '<label class="error_message">Login failed</label>';
                     }
-                    else if ($_GET["error"] === "noaccount"){
-                        echo '<label class="error_message">Account does not exist</label>';
+                    else if ($_GET["error"] === "notmatch"){
+                        echo '<label class="error_message">Password did not match.</label>';
                     }
                     else if ($_GET["error"] === "invalid"){
                         echo '<label class="error_message">Invalid username</label>';
