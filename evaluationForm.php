@@ -23,7 +23,8 @@
                     getEvaluateeName($conn, $_GET["id"]);
                     echo '</div>';
                     echo '<div class="col-sm-4" align="right">';
-                    echo '<input type="checkbox" class="form-check-input" name="fullscreen" id="fullscreen" onclick="setFullscreen(this.checked)">&nbspFullscreen';
+                    echo '<input type="checkbox" id="fullscreen" style="display:none;">';
+                    echo '<p onclick="setFullscreen()" id="fLabel">Expand</p>';
                     echo '</div>';
                     echo '</div>';
                 }
@@ -77,12 +78,19 @@
 </div>
 
 <script type="text/javascript">
-    function setFullscreen(checked){
-        if(checked){
+    function setFullscreen(val){
+        
+        if(document.getElementById("fullscreen").checked === false){
             document.getElementById("register-pane").style.height = "auto";
+            document.getElementById("fLabel").textContent = "Collapse";
+            document.getElementById("fullscreen").checked = true;
+            return;
         }
-        else{
+        else if(document.getElementById("fullscreen").checked === true){
             document.getElementById("register-pane").style.height = "350px";
+            document.getElementById("fLabel").textContent = "Expand";
+            document.getElementById("fullscreen").checked = false;
+            return;
         }
     }
 </script>

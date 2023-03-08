@@ -1,5 +1,6 @@
 <?php
     include_once "header.php";  
+    checkAuthorization(array("Student", "Teaching", "Non-Teaching", "Master"));
 ?>
 
 <div class="container-fluid border" id="login-container">
