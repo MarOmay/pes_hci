@@ -22,7 +22,12 @@
             exit();
         }
 
-        registerUser($conn, $username, $fname, $lname, $section, $pass, "Student");
+        if(isset($_POST["editMode"])){
+            updateUserInfo($conn, $username, $fname, $lname, $section, "Student");
+        }
+        else{
+            registerUser($conn, $username, $fname, $lname, $section, $pass, "Student");
+        }
 
     }
     else{

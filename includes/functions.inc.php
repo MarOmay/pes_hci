@@ -1,7 +1,5 @@
 <?php
 
-use function PHPSTORM_META\type;
-
     include_once "dbh.inc.php";
 
     function cleanString($string){
@@ -185,35 +183,56 @@ use function PHPSTORM_META\type;
     }
 
     function updateUserInfo($conn, $username, $fname, $lname, $sections, $role){
+
         $sql = "UPDATE users
                 SET fname=?, lname=?, role=?
                 WHERE username=?";
+
+        if($role === "Student"){
+            $sql = "UPDATE users
+                SET fname=?, lname=?, section=?
+                WHERE username=?";
+        }
+
         $stmt = mysqli_stmt_init($conn);
 
         if(!mysqli_stmt_prepare($stmt, $sql)){
             exit();
         }
 
-        mysqli_stmt_bind_param($stmt, "ssss", $fname, $lname, $role, $username);
+        if($role === "Student"){
+            mysqli_stmt_bind_param($stmt, "ssss", $fname, $lname, $sections, $username);
+        }
+        else{
+            mysqli_stmt_bind_param($stmt, "ssss", $fname, $lname, $role, $username);
+        }
+        
         mysqli_stmt_execute($stmt);
 
-        deleteEvaluatee($conn, $username);
+        if($role !== "Student"){
+            deleteEvaluatee($conn, $username);
 
-        foreach ($sections as $evaluator){
-            $stmt = mysqli_stmt_init($conn);
-            $sql = "INSERT INTO evaluatees (id, evaluatee_username, evaluatee_fname, evaluatee_lname, evaluator) VALUES (NULL,?,?,?,?)";
-            mysqli_stmt_prepare($stmt, $sql);
-            mysqli_stmt_bind_param($stmt, "ssss", $username, $fname, $lname, $evaluator);
-            mysqli_stmt_execute($stmt);
+            foreach ($sections as $evaluator){
+                $stmt = mysqli_stmt_init($conn);
+                $sql = "INSERT INTO evaluatees (id, evaluatee_username, evaluatee_fname, evaluatee_lname, evaluator) VALUES (NULL,?,?,?,?)";
+                mysqli_stmt_prepare($stmt, $sql);
+                mysqli_stmt_bind_param($stmt, "ssss", $username, $fname, $lname, $evaluator);
+                mysqli_stmt_execute($stmt);
 
-            mysqli_stmt_close($stmt);
+                mysqli_stmt_close($stmt);
+            }
+
+            header("location: ../master_manageEmployees.php?usernameSearchBox=&error=saved");
+        }
+        else{
+            header("location: ../master_manageStudents.php?usernameSearchBox=&error=saved");
         }
 
-        header("location: ../master_manageEmployees.php?usernameSearchBox=&error=saved");
+        
 
     }
 
-    function getSectionsForDropDown($conn){
+    function getSectionsForDropDown($conn, $currentSection){
         $sql = "SELECT * FROM sections";
         $stmt = mysqli_stmt_init($conn);
 
@@ -228,7 +247,14 @@ use function PHPSTORM_META\type;
 
         while($row = mysqli_fetch_assoc($resultData)){
             $section = $row["section"];
-            echo "<option value='" . $section . "'>" . $section . "</option>";
+
+            if($currentSection === $section){
+                echo "<option value='" . $section . "' selected>" . $section . "</option>";
+            }
+            else{
+                echo "<option value='" . $section . "' >" . $section . "</option>";
+            }
+            
         }
 
         mysqli_stmt_close($stmt);
@@ -330,6 +356,29 @@ use function PHPSTORM_META\type;
         $data = mysqli_fetch_assoc($resultData);
 
         return $data["role"];
+    }
+
+    function getSection($conn, $username){
+        $sql = "SELECT section FROM users WHERE username=?";
+        $stmt = mysqli_stmt_init($conn);
+
+        if(!mysqli_stmt_prepare($stmt, $sql)){
+            exit();
+        }
+
+        if(gettype($username) !== gettype("teext")){
+            $username = $username . "";
+        }
+
+        mysqli_stmt_bind_param($stmt, "s", $username);
+
+        mysqli_stmt_execute($stmt);
+
+        $resultData = mysqli_stmt_get_result($stmt);
+
+        $data = mysqli_fetch_assoc($resultData);
+
+        return $data["section"];
     }
 
     function getUsersToEvaluate($conn, $username, $section, $role){
@@ -579,15 +628,16 @@ use function PHPSTORM_META\type;
     }
 
     function deleteEmployee($conn, $username){
+        
         $sql = "DELETE FROM users WHERE username=?";
         $stmt = mysqli_stmt_init($conn);
 
         if(!mysqli_stmt_prepare($stmt, $sql)){
-            header("location: ../register.php?error=internal");
+            //header("location: ../master_manageEmployees.php?error=internal");
             exit();
         }
 
-        mysqli_stmt_bind_param($stmt,"i",$username);
+        mysqli_stmt_bind_param($stmt,"s",$username);
 
         mysqli_stmt_execute($stmt);
 
@@ -605,7 +655,7 @@ use function PHPSTORM_META\type;
             exit();
         }
 
-        mysqli_stmt_bind_param($stmt,"i",$username);
+        mysqli_stmt_bind_param($stmt,"s",$username);
 
         mysqli_stmt_execute($stmt);
 
@@ -673,8 +723,18 @@ use function PHPSTORM_META\type;
         $sql = "UPDATE users SET password=? WHERE username=?";
         $stmt = mysqli_stmt_init($conn);
 
+
+        $routeBack = "location: ../master_home.php";
+
+        if(getRoleByUsername($conn, $username) === "Student"){
+            $routeBack = "location: ../master_manageStudents.php";
+        }
+        else{
+            $routeBack = "location: ../master_manageEmployees.php";
+        }
+
         if(!mysqli_stmt_prepare($stmt, $sql)){
-            header("location: ../master_manageEmployees.php?usernameSearchBox=&error=internal");
+            header($routeBack . "?usernameSearchBox=&error=internal");
             exit();
         }
 
@@ -687,7 +747,7 @@ use function PHPSTORM_META\type;
 
         mysqli_stmt_close($stmt);
 
-        header("location: ../master_manageEmployees.php?usernameSearchBox=&error=reset");
+        header($routeBack . "?usernameSearchBox=&error=reset");
     }
 
     function getEmployeeInfo($conn, $username){

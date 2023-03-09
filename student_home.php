@@ -34,6 +34,13 @@
                 <div class="col-sm-5">
                     
                     <div class="form-group">
+
+                        <?php
+                            if(isset($_SESSION["username"])){
+                                echo '<h4 class="text-left">' . getSection($conn, $_SESSION["username"]) . '</h4>';
+                            }
+                        ?>
+
                         <label for="facultyName">Evaluatee Name</label>
                         <select class="form-control" id="facultyName" name="facultyName" required>
                             <?php

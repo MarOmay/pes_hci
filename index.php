@@ -3,7 +3,7 @@
         include_once "header.php";
     }
     catch(Exception $e){
-        echo 'Create a database named \'pas_hci\', then goto evaluations';
+        echo 'Create a database named \'pas_hci\', then goto evaluations/setup.php';
     }
 
     if(isset($_SESSION["id"])){

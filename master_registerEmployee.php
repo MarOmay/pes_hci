@@ -103,7 +103,7 @@
                             echo '<button type="submit" class="btn btn-primary" id="registerBtn" name="registerBtn">Save</button>';
                         }
                         else{
-                            echo '<button type="submit" class="btn btn-primary" id="registerBtn" name="registerBtn">Register Employe</button>';
+                            echo '<button type="submit" class="btn btn-primary" id="registerBtn" name="registerBtn">Register Employee</button>';
                         }
                         
                     ?>

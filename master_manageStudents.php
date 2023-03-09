@@ -26,12 +26,11 @@
         <div class="container-fluid" id="master-reset-emp" align="center">
             <form action="" method="GET">
                 <div class="row">
-                    <div class="col-sm-8">
+                    <div class="col-sm-10">
                         <input class="form-control" type="text" name="usernameSearchBox" placeholder="Search by name or username..." value="<?php echo $searchKey ?>">
                     </div>
-                    <div class="col-sm-4" align="center" id="searchBtn">
+                    <div class="col-sm-2" align="right" id="searchBtn">
                         <button class="btn btn-primary" type="sumbit" name="searchBtn">Search</button>
-                        <input class="btn btn-success" onclick="window.location.href='master_registerEmployee.php'" type="button" name="addEmp" value="New">
                     </div>
                 </div>
             </form>
@@ -43,10 +42,10 @@
                 function getSearchResult($conn, $keyword){
                     try{
                         $sql = "SELECT * FROM users WHERE (username LIKE ? OR fname LIKE ? OR lname LIKE ?)
-                        AND (role='Teaching' OR role='Non-Teaching')";
+                        AND (role='Student')";
 
                         if(gettype($keyword) === "boolean"){
-                            $sql = "SELECT * FROM users WHERE role='Teaching' OR role='Non-Teaching'";
+                            $sql = "SELECT * FROM users WHERE role='Student'";
                         }
 
                         $stmt = mysqli_stmt_init($conn);
@@ -79,7 +78,7 @@
                                             <p class=''>" . $username . "</p>
                                         </div>
                                         <div class='col-sm-2' align='right'>
-                                            <a href='master_registerEmployee.php?username=" . $username . "'><img src='images/edit.png' width='20' height='20'></a>
+                                            <a href='register.php?username=" . $username . "'><img src='images/edit.png' width='20' height='20'></a>
                                         </div>
                                         <div class='col-sm-2' align='right'>
                                             <a href='#' onclick='resetConf(\"" . $username . "&initials=" . $initials . "&\")'><img src='images/reset.png' width='20' height='20'></a>
@@ -129,10 +128,10 @@
                         <div class='container-fluid'>
                             <div class='row'>
                                 <div class='col-sm-3' align='left'>
-                                    <p class=''>Employee</p>
+                                    <p class=''>Student</p>
                                 </div>
                                 <div class='col-sm-3' align='left'>
-                                    <p class=''>Username</p>
+                                    <p class=''>LRN</p>
                                 </div>
                                 <div class='col-sm-2' align='center'>
                                     <p class=''>Edit</p>

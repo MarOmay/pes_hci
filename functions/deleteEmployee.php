@@ -5,25 +5,46 @@
     session_start();
     checkAuthorization(array("Master"));
 
+    $routeBack = "location: ../master_home.php";
+
     if($_SERVER['REQUEST_METHOD'] == 'POST'){
         
         if(isset($_POST["employees"])){
 
             foreach($_POST["employees"] as $employee){
+
+                if(getRoleByUsername($conn, $employee) === "Student"){
+                    $routeBack = "location: ../master_manageStudents.php";
+                }
+                else{
+                    $routeBack = "location: ../master_manageEmployees.php";
+                }
+
                 deleteEmployee($conn, $employee);
             }
 
-            header("location: ../master_manageEmployees.php?error=deleted");
+            header($routeBack . "?error=deleted");
         }
         else{
-            header("location: ../master_manageEmployees.php?error=noselect");
+            header($routeBack . "?error=noselect");
         }
     }
     else if (isset($_GET["username"])){
-        deleteEmployee($conn, $_GET["username"]);
-        header("location: ../master_manageEmployees.php?error=deleted");
+
+        $username = $_GET["username"];
+
+        if(getRoleByUsername($conn, $username) === "Student"){
+            $routeBack = "location: ../master_manageStudents.php";
+        }
+        else{
+            $routeBack = "location: ../master_manageEmployees.php";
+        }
+
+        deleteEmployee($conn, $username);
+        header($routeBack . "?error=deleted");
     }
     else{
-        header("location: ../master_manageEmployees.php");
+        header($routeBack);
     }
+
 ?>
