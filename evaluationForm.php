@@ -38,7 +38,7 @@
                 include_once "includes/dbh.inc.php";
                 include_once "includes/functions.inc.php";
 
-                getFactors($conn);
+                getFactors($conn, $_SESSION["role"]);
             ?>
 
             <br>

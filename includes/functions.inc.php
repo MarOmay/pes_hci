@@ -474,7 +474,7 @@
 
     // for evaluationForm.php
 
-    function getFactors($conn){
+    function getFactors($conn, $role){
         $sql = "SELECT * FROM factors";
         $stmt = mysqli_stmt_init($conn);
 
@@ -506,7 +506,9 @@
 
             echo "<option value=''>--</option>";
 
-            for($i = $row["peer_rate"]; $i>0; $i--){
+            $rate = $role === "Student" ? $row["student_rate"] : $row["peer_rate"];
+
+            for($i = $rate; $i>0; $i--){
                 echo "<option value='" . $i . "'>" . $i . "</option>";
             }
 

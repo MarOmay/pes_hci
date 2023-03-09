@@ -38,6 +38,8 @@
                             $id = $row["id"];
                             $factor = $row["factor"];
                             $description = $row["description"];
+                            $peerRate = $row["peer_rate"];
+                            $studentRate = $row["student_rate"];
                             echo "<div class='container-fluid' id='factorRow'>
 
                                     <div class='row' style='word-wrap: break-word;'>
@@ -55,6 +57,11 @@
                                         <div class='col-sm-10'>
                                             <p>" . $description . "</p>
                                         </div>
+                                    </div>
+
+                                    <div class='row'>
+                                        <p>Peer Max. Rate: " . $peerRate . "<br>
+                                        Student Max. Rate: " . $studentRate . "</p>
                                     </div>
                             
                                 </div>";
@@ -75,7 +82,7 @@
                                 <p class="h5">Factors</p>
                             </div>
                             <div class="col-sm-3">
-                                <button class="btn text-success" onclick="window.location.href=\'addFactor.php\'">New Factor</button>
+                                <button class="btn bg-success text-white" onclick="window.location.href=\'addFactor.php\'">New Factor</button>
                             </div>
                             <br>
                             <br>

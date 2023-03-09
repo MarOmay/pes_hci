@@ -39,7 +39,7 @@
 
                     <div class="form-group">
                         <label for="username">Learner Reference Number</label>
-                        <input type="text" min="0" class="form-control" id="username" name="username" value = "<?php echo ($editMode)?$student["username"]:'';?>" <?php echo (isset($student["username"]))?'readonly':'';?> required>
+                        <input type="text" min="0" maxlength="12" class="form-control" id="username" name="username" value = "<?php echo ($editMode)?$student["username"]:'';?>" <?php echo (isset($student["username"]))?'readonly':'';?> required>
                     </div>
                     <div class="form-group">
                         <label for="fname">First name</label>

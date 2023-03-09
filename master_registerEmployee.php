@@ -34,7 +34,7 @@
 
                     <div class="form-group">
                         <label for="username">Employee ID</label>
-                        <input type="text" class="form-control" id="username" name="username" value = "<?php echo ($editMode)?$employee["username"]:'';?>" <?php echo (isset($employee["username"]))?'readonly':'';?> required>
+                        <input type="text" class="form-control" maxlength="12" id="username" name="username" value = "<?php echo ($editMode)?$employee["username"]:'';?>" <?php echo (isset($employee["username"]))?'readonly':'';?> required>
                     </div>
                     <div class="form-group">
                         <label for="fname">First name</label>
