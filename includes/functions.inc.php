@@ -336,6 +336,8 @@
     }
 
     function getRoleByUsername($conn, $username){
+
+        error_reporting(0);
         $sql = "SELECT role FROM users WHERE username=?";
         $stmt = mysqli_stmt_init($conn);
 
@@ -354,7 +356,7 @@
         $resultData = mysqli_stmt_get_result($stmt);
 
         $data = mysqli_fetch_assoc($resultData);
-
+        
         return $data["role"];
     }
 

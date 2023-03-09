@@ -269,3 +269,37 @@ body {
 #comments-emp-name {
     vertical-align: text-bottom;
 }
+
+#fLabel {
+    cursor: pointer;
+}
+
+#offcanvasRight {
+    max-width: 20%;
+}
+
+#siganture {
+    margin-left: 10px;
+}
+
+#siganture p {
+    font-size: 12px;
+}
+
+#menu-ribbon {
+    color: white;
+    letter-spacing: .2rem;
+    padding: 2%;
+    background-color: #00215f;
+    margin-bottom: 0px;
+}
+
+#menu-ribbon h5 {
+    margin: 5px;
+}
+
+#menu-link {
+    font-size: 24px;
+    letter-spacing: 2.5px;
+    font-weight: 500;
+}

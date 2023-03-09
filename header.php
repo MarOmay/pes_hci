@@ -43,7 +43,7 @@
         <div class="col-sm-1">
             <?php 
                 if(isset($_SESSION["id"])){
-                    echo '<button class="btn btn-primary" data-bs-toggle="collapse" data-bs-target="#collapse-ribbon">'. $_SESSION["fname"] . '</button>';
+                    echo '<img src="images/burger.png" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight" width="50" height="auto" style="cursor:pointer;">';
                 }
             ?>
         </div>
@@ -51,18 +51,38 @@
   
 </div>
 
-<div class="container-fluid bg-white collapse row" id="collapse-ribbon">
-    <div class="col-sm-8"></div>
-    <ul class="nav col-sm-4" align="right">
-        <li class="nav-item">
-            <a class="nav-link active" href="index.php">Home</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link active" href="resetPassword.php">Change Password</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="functions/logout.php">Logout</a>
-        </li>
-    </ul>
+<div class="offcanvas offcanvas-end" tabindex="1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+    <div class="offcanvas-header" id="menu-ribbon">
+        <h5 id="offcanvasRightLabel" ><?php echo isset($_SESSION["fname"]) ? strtoupper($_SESSION["fname"] . " " . $_SESSION["lname"]) : "" ?></h5>
+    </div>
+    <div class="offcanvas-body" id="offcanvas-body">
+        <div class="container-fluid bg-white row" id="collapse-ribbon">
+            <nav class="navbar">
+                <ul class="navbar-nav" align="left">
+                    <li class="nav-item">
+                        <a class="nav-link active menu-link" href="index.php">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="resetPassword.php">Change Password</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="functions/logout.php">Logout</a>
+                    </li>
+                </ul>
+            </nav>
+
+        </div>
+
+        
+    </div>
+
+    <div id="siganture">
+        <p>Developed by<br><br>Mar Alexis O. Omay<br>Jireh D. Trinidad<br>Bulacan State University - SC</p>
+    </div>
+
+    <div id="menu-ribbon">
+    &nbsp;
+    </div>
+
 </div>
 
