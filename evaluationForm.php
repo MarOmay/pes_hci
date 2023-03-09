@@ -24,7 +24,7 @@
                     echo '</div>';
                     echo '<div class="col-sm-4" align="right">';
                     echo '<input type="checkbox" id="fullscreen" style="display:none;">';
-                    echo '<p onclick="setFullscreen()" id="fLabel">Expand</p>';
+                    echo '<input type="button" class="btn text-success"" onclick="setFullscreen()" id="fLabel" value="Expand">';
                     echo '</div>';
                     echo '</div>';
                 }
@@ -82,13 +82,13 @@
         
         if(document.getElementById("fullscreen").checked === false){
             document.getElementById("register-pane").style.height = "auto";
-            document.getElementById("fLabel").textContent = "Collapse";
+            document.getElementById("fLabel").value = "Collapse";
             document.getElementById("fullscreen").checked = true;
             return;
         }
         else if(document.getElementById("fullscreen").checked === true){
             document.getElementById("register-pane").style.height = "350px";
-            document.getElementById("fLabel").textContent = "Expand";
+            document.getElementById("fLabel").value = "Expand";
             document.getElementById("fullscreen").checked = false;
             return;
         }

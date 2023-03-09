@@ -215,9 +215,7 @@ body {
 
 #factorBox {
     border-radius: 15px;
-    height: 350px;
     padding: 5px;
-    overflow-y: auto;
     border: none;
     border-radius: 0%;
 }

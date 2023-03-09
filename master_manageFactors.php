@@ -11,9 +11,9 @@
         <h4 class="text-center">Performance Evaluation System</h4>
     </div>
 
-    <div id="manage-emp-pane">
+    <div class="evaluation-pane" id="register-pane" style="overflow-y: auto;">
 
-        <div class="container-fluid" id="master-reset-emp" align="center">
+        <div class="container-fluid" id="register-form">
 
             <?php
                 include_once "includes/dbh.inc.php";
@@ -76,18 +76,25 @@
                     
                 }
 
-                echo '<div class="container-fluid" align="left" id="factorBox">
-                        <div class="row">
-                            <div class="col-sm-9">
-                                <p class="h5">Factors</p>
-                            </div>
-                            <div class="col-sm-3">
-                                <button class="btn bg-success text-white" onclick="window.location.href=\'addFactor.php\'">New Factor</button>
-                            </div>
-                            <br>
-                            <br>
-                            <br>
-                        </div>';
+                echo '  <div class="container-fluid" align="left" id="factorBox">
+                            <div class="col-sm-11" align="right">
+                                <input type="checkbox" id="fullscreen" style="display:none;">
+                                
+                            </div>';
+                echo '      <div class="row">
+                                <div class="col-sm-6">
+                                    <p class="h5">Factors</p>
+                                </div>
+                                <div class="col-sm-6" align="right">
+                                    <button class="btn text-success" onclick="window.location.href=\'addFactor.php\'">New Factor</button>
+                                    | <button class="btn text-success"" onclick="setFullscreen()" id="fLabel">Expand</button>
+                                </div>
+                                <br>
+                                <br>
+                                <br>
+                            </div>';
+
+                
 
                 displayFactors($conn);
 
@@ -145,6 +152,22 @@
 
         if (confirm("Delete selected factor?")) {
             window.location.href= "functions/deleteFactor.php?id=" + id;
+        }
+    }
+
+    function setFullscreen(val){
+        
+        if(document.getElementById("fullscreen").checked === false){
+            document.getElementById("register-pane").style.height = "auto";
+            document.getElementById("fLabel").textContent = "Collapse";
+            document.getElementById("fullscreen").checked = true;
+            return;
+        }
+        else if(document.getElementById("fullscreen").checked === true){
+            document.getElementById("register-pane").style.height = "350px";
+            document.getElementById("fLabel").textContent = "Expand";
+            document.getElementById("fullscreen").checked = false;
+            return;
         }
     }
 
