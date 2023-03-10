@@ -25,8 +25,8 @@ body {
 
 #login-container {
     height: auto;
-    padding-left: 20%;
-    padding-right: 20%;
+    padding-left: 12%;
+    padding-right: 12%;
     padding-top: 3%;
     padding-bottom: 3%;
 }
@@ -281,7 +281,7 @@ body {
 }
 
 #siganture p {
-    font-size: 12px;
+    font-size: 10px;
 }
 
 #menu-ribbon {

@@ -219,7 +219,15 @@ use function PHPSTORM_META\type;
     }
 
     function exportData(type, username){
-        window.location.href="functions/exportData.php?type=" + type + "&username=" + username;
+        if (typeof username === 'undefined' || username === null || username.length < 1) {
+            console.log("Username undefined");
+            window.location.href="functions/exportData.php?type=" + type;
+        }
+        else{
+            console.log("Username: '" + username + "'");
+            window.location.href="functions/exportData.php?type=" + type + "&username=" + username;
+        }
+        
     }
 
 </script>

@@ -199,7 +199,7 @@
                 $filter = $_GET["type"] === "commentPerUser_Student" ? "Student" : "";
 
                 $filename = "comments-individual-". $filter . "-" . date('Y-m-d') . ".xls";
-                $fields = array("For Employee", "Positive Comments", "Negative Comments");
+                $fields = array("Fer Employee", "Positive Comments", "Negative Comments");
                 $excelData = implode("\t", array_values($fields)) . "\n";
 
                 //error_reporting(0);
@@ -247,7 +247,10 @@
                 $allEmployeeUsernames = getAllEmployeesUsername($conn);
 
                 while($usernames = mysqli_fetch_assoc($allEmployeeUsernames)){
-                    $evaluations = getEvaluationsByUsername($conn, $usernames["username"]);
+
+                    $username = $usernames["username"];
+                    
+                    $evaluations = getEvaluationsByUsername($conn, $username);
 
                     while($eval = mysqli_fetch_assoc($evaluations)){
 
@@ -264,7 +267,7 @@
                             }
                         }
 
-                        $lineData = array(getNameByUsername($conn, $usernames["username"]), $eval["positive_comment"], $eval["negative_comment"]);
+                        $lineData = array(getNameByUsername($conn, $username), $eval["positive_comment"], $eval["negative_comment"]);
 
                         array_walk($lineData, 'filterData');
 
@@ -287,3 +290,4 @@
     
     
 ?>
+
