@@ -2,6 +2,8 @@
 
 A Web-based system using PHP, JavaScript and Bootstrap used by approx. 2000 students and 40 teaching and non-teaching employees of Headwaters College - Elizabeth Campus Inc.
 
+Source codes are intentionally hidden. Contact the institution for verification.
+
 ## Login Screen
 - Students must register first using their LRN's, which also serves as their username
 - Instructors must login using Admin-issued accounts (Default passwords are system-generated and may be changed once logged-in)
